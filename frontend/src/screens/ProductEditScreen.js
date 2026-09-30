@@ -93,11 +93,14 @@ const ProductEditScreen = ({ match, history }) => {
 
 	return (
 		<>
-			<Link to='/admin/productlist' className='btn btn-light my-3'>
-				Go Back
-			</Link>
+			<div className='mb-3'>
+				<Link to='/admin/productlist' className='btn btn-light'>
+					<i className='fas fa-arrow-left mr-2'></i> Back to Products
+				</Link>
+			</div>
+
 			<FormContainer>
-				<h1>Edit Product</h1>
+				<h1 className='mb-4'>Edit Product</h1>
 				{loadingUpdate && <Loader />}
 				{errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
 				{loading ? (
@@ -108,78 +111,95 @@ const ProductEditScreen = ({ match, history }) => {
 					<>
 						<Meta title={`Edit | ${name}`} />
 						<Form onSubmit={submitHandler}>
-							<Form.Group controlId='name'>
-								<Form.Label>Name</Form.Label>
+							<Form.Group controlId='name' className='mb-3'>
+								<Form.Label className='font-weight-bold'>Product Title</Form.Label>
 								<Form.Control
-									type='name'
-									placeholder='Enter name'
+									type='text'
+									placeholder='Enter product name'
 									value={name}
 									onChange={(e) => setName(e.target.value)}
-								></Form.Control>
+									required
+								/>
 							</Form.Group>
-							<Form.Group controlId='price'>
-								<Form.Label>Price</Form.Label>
+
+							<Form.Group controlId='price' className='mb-3'>
+								<Form.Label className='font-weight-bold'>Price ($)</Form.Label>
 								<Form.Control
 									type='number'
+									step='0.01'
 									placeholder='Enter price'
 									value={price}
 									onChange={(e) => setPrice(e.target.value)}
-								></Form.Control>
+									required
+								/>
 							</Form.Group>
-							<Form.Group controlId='image'>
-								<Form.Label>Image</Form.Label>
+
+							<Form.Group controlId='image' className='mb-3'>
+								<Form.Label className='font-weight-bold'>Image URL (.png transparent)</Form.Label>
 								<Form.Control
 									type='text'
-									placeholder='Enter image url'
+									placeholder='e.g. /images/iphone15pro.png'
 									value={image}
 									onChange={(e) => setImage(e.target.value)}
-								></Form.Control>
+									required
+								/>
 								<Form.File
 									id='image-file'
-									label='Choose File'
+									label='Upload PNG File'
 									custom
+									className='mt-2'
 									onChange={uploadFileHandler}
-								></Form.File>
+								/>
 								{uploading && <Loader />}
 							</Form.Group>
-							<Form.Group controlId='brand'>
-								<Form.Label>Brand</Form.Label>
+
+							<Form.Group controlId='brand' className='mb-3'>
+								<Form.Label className='font-weight-bold'>Brand / Manufacturer</Form.Label>
 								<Form.Control
 									type='text'
-									placeholder='Enter brand'
+									placeholder='e.g. Apple, Samsung, Sony, ASUS'
 									value={brand}
 									onChange={(e) => setBrand(e.target.value)}
-								></Form.Control>
+									required
+								/>
 							</Form.Group>
-							<Form.Group controlId='category'>
-								<Form.Label>Category</Form.Label>
+
+							<Form.Group controlId='category' className='mb-3'>
+								<Form.Label className='font-weight-bold'>Department / Category</Form.Label>
 								<Form.Control
 									type='text'
-									placeholder='Enter category'
+									placeholder='e.g. Smartphones & Tablets, PC Components & Desktops'
 									value={category}
 									onChange={(e) => setCategory(e.target.value)}
-								></Form.Control>
+									required
+								/>
 							</Form.Group>
-							<Form.Group controlId='imacountInStockge'>
-								<Form.Label>Count In Stock</Form.Label>
+
+							<Form.Group controlId='countInStock' className='mb-3'>
+								<Form.Label className='font-weight-bold'>Inventory Count</Form.Label>
 								<Form.Control
 									type='number'
-									placeholder='Enter count in stock'
+									placeholder='Available stock units'
 									value={countInStock}
 									onChange={(e) => setCountInStock(e.target.value)}
-								></Form.Control>
+									required
+								/>
 							</Form.Group>
-							<Form.Group controlId='description'>
-								<Form.Label>Description</Form.Label>
+
+							<Form.Group controlId='description' className='mb-4'>
+								<Form.Label className='font-weight-bold'>Specifications & Description</Form.Label>
 								<Form.Control
-									type='text'
-									placeholder='Enter description'
+									as='textarea'
+									rows={4}
+									placeholder='Hardware specs and details'
 									value={description}
 									onChange={(e) => setDescription(e.target.value)}
-								></Form.Control>
+									required
+								/>
 							</Form.Group>
-							<Button type='submit' variant='primary'>
-								Update
+
+							<Button type='submit' className='btn-accent btn-block py-2 font-weight-bold'>
+								Save Product Changes
 							</Button>
 						</Form>
 					</>

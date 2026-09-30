@@ -26,13 +26,17 @@ const Header = () => {
 	};
 
 	const categories = [
-		{ label: 'All Products', icon: 'fas fa-th-large', query: '' },
-		{ label: 'Audio & Sound', icon: 'fas fa-headphones', query: 'Audio' },
-		{ label: 'Smartphones', icon: 'fas fa-mobile-alt', query: 'Smartphones' },
-		{ label: 'Cameras & Optics', icon: 'fas fa-camera', query: 'Cameras' },
-		{ label: 'Gaming & Consoles', icon: 'fas fa-gamepad', query: 'Gaming' },
-		{ label: 'Accessories', icon: 'fas fa-mouse', query: 'Accessories' },
-		{ label: 'Smart Home', icon: 'fas fa-broadcast-tower', query: 'Smart Home' },
+		{ label: 'All Catalog Products', icon: 'fas fa-th-large', query: '' },
+		{ label: 'Smartphones, Tablets & Handhelds', icon: 'fas fa-mobile-alt', query: 'Smartphones' },
+		{ label: 'Laptops & Portable Computing', icon: 'fas fa-laptop', query: 'Laptops' },
+		{ label: 'PC Components, GPUs & Desktops', icon: 'fas fa-microchip', query: 'Components' },
+		{ label: 'Smartwatches, Trackers & Glasses', icon: 'fas fa-clock', query: 'Wearables' },
+		{ label: 'Monitors & Displays', icon: 'fas fa-desktop', query: 'Monitors' },
+		{ label: 'Keyboards, Mice & Controllers', icon: 'fas fa-keyboard', query: 'Keyboards' },
+		{ label: 'Audio, Streaming & Studio Gear', icon: 'fas fa-headphones', query: 'Audio' },
+		{ label: 'Power, Charging & GaN Hubs', icon: 'fas fa-bolt', query: 'Power' },
+		{ label: 'External Storage & Backup SSDs', icon: 'fas fa-hdd', query: 'Storage' },
+		{ label: 'Networking, Wi-Fi 7 & Smart Home', icon: 'fas fa-wifi', query: 'Networking' },
 	];
 
 	const handleCategorySelect = (query) => {
@@ -48,7 +52,7 @@ const Header = () => {
 			<Navbar className='custom-navbar' variant='dark' expand='lg' collapseOnSelect>
 				<Container>
 					<Link to='/' className='navbar-brand brand-logo'>
-						<i className='fas fa-cube text-primary mr-1'></i>
+						<i className='fas fa-cube text-primary mr-2'></i>
 						<span>PRO<span style={{ color: '#60a5fa' }}>SHOP</span></span>
 						<span className='brand-dot'></span>
 					</Link>
@@ -62,14 +66,14 @@ const Header = () => {
 								title={
 									<span className='d-inline-flex align-items-center text-light font-weight-bold'>
 										<i className='fas fa-th-large mr-2 text-primary'></i>
-										Categories
+										Departments
 										<i className='fas fa-chevron-down ml-2' style={{ fontSize: '0.75rem', opacity: 0.7 }}></i>
 									</span>
 								}
 								id='categories-nav-dropdown'
 							>
 								<div className='dropdown-header text-muted' style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-									Shop by Department
+									Shop by Hardware Category
 								</div>
 								{categories.map((cat) => (
 									<NavDropdown.Item
@@ -96,7 +100,7 @@ const Header = () => {
 								title={
 									<span className='d-inline-flex align-items-center'>
 										<i className='fas fa-list mr-1'></i>
-										<span>Categories</span>
+										<span>Departments</span>
 									</span>
 								}
 								id='mobile-categories'

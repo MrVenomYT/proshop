@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="cubeTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    <linearGradient id="cubeLeft" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#1e3a8a" />
+    </linearGradient>
+    <linearGradient id="cubeRight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1d4ed8" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+  </defs>
+  <!-- 3D Isometric Cube -->
+  <polygon points="32,6 56,19 32,32 8,19" fill="url(#cubeTop)" />
+  <polygon points="8,19 32,32 32,58 8,45" fill="url(#cubeLeft)" />
+  <polygon points="32,32 56,19 56,45 32,58" fill="url(#cubeRight)" />
+  <!-- Center Core Glow Point -->
+  <circle cx="32" cy="32" r="4" fill="#67e8f9" />
+</svg>

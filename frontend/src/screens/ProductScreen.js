@@ -99,6 +99,12 @@ const ProductScreen = ({ history, match }) => {
 		}
 	};
 
+	const hasDiscount = product && product.originalPrice && product.originalPrice > product.price;
+	const discountPercent =
+		product &&
+		(product.discountPercent ||
+			(hasDiscount ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) : 0));
+
 	return (
 		<>
 			<div className='mb-4'>
@@ -111,20 +117,25 @@ const ProductScreen = ({ history, match }) => {
 				<Loader />
 			) : error ? (
 				<Message variant='danger'>{error}</Message>
+			) : !product || !product.name ? (
+				<Message variant='danger'>Product Not Found</Message>
 			) : (
 				<>
 					<Meta title={`${product.name} | ProShop`} />
 
 					<Row className='mb-5'>
-						{/* Product Image Stage */}
+						{/* Product Image Stage with Transparent PNG focus */}
 						<Col lg={7} md={6} className='mb-4 mb-md-0'>
 							<div className='pdp-gallery-container'>
 								<img
 									src={product.image}
 									alt={product.name}
+									style={{
+										filter: 'drop-shadow(0 20px 30px rgba(0, 0, 0, 0.12))',
+									}}
 									onError={(e) => {
 										e.target.onerror = null;
-										e.target.src = '/images/sample.jpg';
+										e.target.src = '/images/sample.png';
 									}}
 								/>
 							</div>
@@ -134,13 +145,17 @@ const ProductScreen = ({ history, match }) => {
 						<Col lg={5} md={6}>
 							<div className='pdp-info-card'>
 								<div className='d-flex align-items-center justify-content-between mb-2'>
-									<span className='product-category-kicker mb-0'>{product.brand || 'Electronics'}</span>
+									<div className='d-flex align-items-center gap-2'>
+										<span className='product-category-kicker mb-0'>{product.brand || 'Hardware'}</span>
+										{product.isHot && <span className='badge-pill hot'>HOT DEAL</span>}
+										{discountPercent > 0 && <span className='badge-pill sale'>-{discountPercent}% OFF</span>}
+									</div>
 									<button
 										type='button'
 										onClick={toggleFavoriteHandler}
 										className={`product-favorite-btn ${isFavorite ? 'favorited' : ''}`}
 										style={{ position: 'static', width: '40px', height: '40px' }}
-										title={isFavorite ? 'Remove from favorites' : 'Save to favorites'}
+										title={isFavorite ? 'Remove from favorites' : 'Save to wishlist'}
 									>
 										<i className={isFavorite ? 'fas fa-heart text-danger' : 'far fa-heart'}></i>
 									</button>
@@ -149,23 +164,28 @@ const ProductScreen = ({ history, match }) => {
 								<h1 style={{ fontSize: '1.75rem', lineHeight: '1.3' }}>{product.name}</h1>
 
 								<div className='d-flex align-items-center mb-3 pb-3 border-bottom'>
-									<Rating value={product.rating} text={`${product.numReviews} customer reviews`} />
+									<Rating value={product.rating} text={`${product.numReviews} verified customer reviews`} />
 								</div>
 
 								<div className='d-flex align-items-baseline justify-content-between mb-4'>
 									<div className='d-flex align-items-baseline gap-2'>
-										<span style={{ fontSize: '2rem', fontWeight: '800', fontFamily: 'var(--font-heading)' }}>
+										<span style={{ fontSize: '2.1rem', fontWeight: '800', fontFamily: 'var(--font-heading)' }}>
 											${Number(product.price).toFixed(2)}
 										</span>
+										{hasDiscount && (
+											<span className='product-original-price ml-2' style={{ fontSize: '1.2rem' }}>
+												${Number(product.originalPrice).toFixed(2)}
+											</span>
+										)}
 									</div>
 
 									<span className={`status-pill ${product.countInStock > 0 ? 'success' : 'danger'}`}>
 										<span className='stock-dot'></span>
-										{product.countInStock > 0 ? `${product.countInStock} Units in Stock` : 'Out of Stock'}
+										{product.countInStock > 0 ? `${product.countInStock} In Stock` : 'Sold Out'}
 									</span>
 								</div>
 
-								<p className='text-muted mb-4' style={{ fontSize: '0.95rem' }}>
+								<p className='text-muted mb-4' style={{ fontSize: '0.95rem', lineHeight: '1.6' }}>
 									{product.description}
 								</p>
 
@@ -178,9 +198,9 @@ const ProductScreen = ({ history, match }) => {
 											as='select'
 											value={qty}
 											onChange={(e) => setQty(Number(e.target.value))}
-											style={{ maxWidth: '100px' }}
+											style={{ width: '90px', borderRadius: '8px' }}
 										>
-											{[...Array(product.countInStock).keys()].map((x) => (
+											{[...Array(Math.min(product.countInStock, 10)).keys()].map((x) => (
 												<option key={x + 1} value={x + 1}>
 													{x + 1}
 												</option>
@@ -191,28 +211,28 @@ const ProductScreen = ({ history, match }) => {
 
 								<Button
 									onClick={addToCartHandler}
-									className='btn-block btn-accent py-3 font-weight-bold mb-3'
+									className='btn-accent btn-block py-3 mb-3'
 									type='button'
 									disabled={product.countInStock === 0}
 									style={{ fontSize: '1rem', letterSpacing: '0.02em' }}
 								>
 									<i className='fas fa-shopping-bag mr-2'></i>
-									{product.countInStock > 0 ? 'Add to Shopping Bag' : 'Currently Unavailable'}
+									{product.countInStock > 0 ? 'Add to Bag' : 'Temporarily Out of Stock'}
 								</Button>
 
-								{/* Trust Badges */}
-								<div className='trust-badge-row'>
-									<div className='trust-badge-item'>
-										<i className='fas fa-shipping-fast text-primary'></i>
-										<span>Free Express Delivery</span>
+								{/* Trust Indicators */}
+								<div className='row pt-3 text-muted text-center' style={{ fontSize: '0.8rem', borderTop: '1px solid #f1f5f9' }}>
+									<div className='col-4'>
+										<i className='fas fa-shield-alt fa-lg mb-1 d-block text-primary'></i>
+										2-Yr Warranty
 									</div>
-									<div className='trust-badge-item'>
-										<i className='fas fa-shield-alt text-primary'></i>
-										<span>1-Year Warranty</span>
+									<div className='col-4'>
+										<i className='fas fa-truck fa-lg mb-1 d-block text-primary'></i>
+										Free Express
 									</div>
-									<div className='trust-badge-item'>
-										<i className='fas fa-undo text-primary'></i>
-										<span>30-Day Returns</span>
+									<div className='col-4'>
+										<i className='fas fa-undo fa-lg mb-1 d-block text-primary'></i>
+										30-Day Return
 									</div>
 								</div>
 							</div>
@@ -220,89 +240,104 @@ const ProductScreen = ({ history, match }) => {
 					</Row>
 
 					{/* Customer Reviews Section */}
-					<Row className='mt-4'>
-						<Col lg={7} md={12} className='mb-4'>
-							<Card className='p-4'>
-								<h2 className='mb-3'>Customer Reviews ({product.reviews ? product.reviews.length : 0})</h2>
+					<Row>
+						<Col md={7}>
+							<div className='d-flex align-items-center justify-content-between mb-3'>
+								<h2 style={{ fontSize: '1.4rem' }}>Verified Customer Reviews</h2>
+								<span className='text-muted' style={{ fontSize: '0.85rem' }}>
+									{product.reviews.length} total review{product.reviews.length !== 1 ? 's' : ''}
+								</span>
+							</div>
 
-								{product.reviews && product.reviews.length === 0 && (
-									<div className='p-4 text-center text-muted bg-light rounded'>
-										<i className='far fa-comment-dots fa-2x mb-2'></i>
-										<p className='mb-0'>No reviews yet. Be the first to share your experience!</p>
-									</div>
-								)}
+							{product.reviews.length === 0 && (
+								<Message variant='info'>No reviews yet. Be the first to review this product!</Message>
+							)}
 
-								<div className='reviews-list'>
-									{product.reviews &&
-										product.reviews.map((review) => (
-											<div key={review._id} className='border-bottom py-3'>
-												<div className='d-flex align-items-center justify-content-between mb-1'>
-													<strong style={{ fontSize: '0.95rem' }}>{review.name}</strong>
-													<span className='text-muted' style={{ fontSize: '0.8rem' }}>
-														{review.createdAt ? review.createdAt.substring(0, 10) : 'Recent'}
+							<div className='d-flex flex-column gap-3'>
+								{product.reviews.map((rev) => (
+									<Card key={rev._id} className='p-3 mb-3 border-0' style={{ background: '#f8fafc', borderRadius: '12px' }}>
+										<div className='d-flex justify-content-between align-items-center mb-2'>
+											<div className='d-flex align-items-center'>
+												<div
+													style={{
+														width: '32px',
+														height: '32px',
+														borderRadius: '50%',
+														background: '#0f172a',
+														color: '#fff',
+														display: 'flex',
+														alignItems: 'center',
+														justifyContent: 'center',
+														fontSize: '0.85rem',
+														fontWeight: '700',
+														marginRight: '10px',
+													}}
+												>
+													{rev.name.charAt(0).toUpperCase()}
+												</div>
+												<div>
+													<strong className='d-block' style={{ fontSize: '0.9rem' }}>{rev.name}</strong>
+													<span className='text-muted' style={{ fontSize: '0.75rem' }}>
+														{rev.createdAt ? rev.createdAt.substring(0, 10) : 'Recent'}
 													</span>
 												</div>
-												<div className='mb-2'>
-													<Rating value={review.rating} />
-												</div>
-												<p className='text-muted mb-0' style={{ fontSize: '0.9rem' }}>
-													{review.comment}
-												</p>
 											</div>
-										))}
-								</div>
-							</Card>
+											<Rating value={rev.rating} />
+										</div>
+										<p className='mb-0 text-dark' style={{ fontSize: '0.9rem', lineHeight: '1.5' }}>
+											{rev.comment}
+										</p>
+									</Card>
+								))}
+							</div>
 						</Col>
 
-						<Col lg={5} md={12}>
-							<Card className='p-4'>
-								<h2 className='mb-3'>Write a Review</h2>
+						<Col md={5}>
+							<Card className='p-4 border-0' style={{ background: '#ffffff', borderRadius: '16px', boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)' }}>
+								<h3 style={{ fontSize: '1.2rem' }}>Write a Review</h3>
 
 								{reviewSubmitted && (
-									<Message variant='success'>Thank you! Your review has been recorded.</Message>
+									<Message variant='success'>Thank you! Your review has been submitted.</Message>
 								)}
 								{errorProductReview && <Message variant='danger'>{errorProductReview}</Message>}
 
 								{userInfo ? (
 									<Form onSubmit={submitHandler}>
 										<Form.Group controlId='rating' className='mb-3'>
-											<Form.Label className='font-weight-bold'>Overall Rating</Form.Label>
+											<Form.Label className='font-weight-bold'>Rating</Form.Label>
 											<Form.Control
 												as='select'
 												value={rating}
 												onChange={(e) => setRating(Number(e.target.value))}
 											>
-												<option value='5'>5 - Excellent ★★★★★</option>
-												<option value='4'>4 - Very Good ★★★★☆</option>
-												<option value='3'>3 - Average ★★★☆☆</option>
-												<option value='2'>2 - Fair ★★☆☆☆</option>
-												<option value='1'>1 - Poor ★☆☆☆☆</option>
+												<option value='5'>5 - ★★★★★ Exceptional</option>
+												<option value='4'>4 - ★★★★☆ Very Good</option>
+												<option value='3'>3 - ★★★☆☆ Average</option>
+												<option value='2'>2 - ★★☆☆☆ Fair</option>
+												<option value='1'>1 - ★☆☆☆☆ Poor</option>
 											</Form.Control>
 										</Form.Group>
 
-										<Form.Group controlId='comment' className='mb-3'>
-											<Form.Label className='font-weight-bold'>Your Feedback</Form.Label>
+										<Form.Group controlId='comment' className='mb-4'>
+											<Form.Label className='font-weight-bold'>Feedback / Comments</Form.Label>
 											<Form.Control
 												as='textarea'
-												rows={4}
+												row='4'
 												value={comment}
+												placeholder='Share your experience with build quality, battery life, performance...'
 												onChange={(e) => setComment(e.target.value)}
-												placeholder='What did you like or dislike about this product?'
 												required
 											/>
 										</Form.Group>
 
-										<Button type='submit' className='btn-primary btn-block py-2'>
-											Submit Review
+										<Button type='submit' className='btn-accent btn-block py-2 font-weight-bold'>
+											Submit Verified Review
 										</Button>
 									</Form>
 								) : (
-									<div className='text-center p-4 bg-light rounded'>
-										<p className='text-muted mb-3'>Sign in to share your verified review.</p>
-										<Link to='/login' className='btn btn-primary btn-sm'>
-											Sign In to Review
-										</Link>
-									</div>
+									<Message>
+										Please <Link to='/login' className='font-weight-bold'>Sign In</Link> to post a product review.
+									</Message>
 								)}
 							</Card>
 						</Col>

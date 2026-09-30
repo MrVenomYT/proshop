@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Form, Button, Row, Col, Card } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
+import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
@@ -216,11 +216,9 @@ const ProfileScreen = ({ location, history }) => {
 														)}
 													</td>
 													<td className='text-right'>
-														<LinkContainer to={`/order/${order._id}`}>
-															<Button size='sm' className='btn-light font-weight-bold'>
-																View
-															</Button>
-														</LinkContainer>
+														<Link to={`/order/${order._id}`} className='btn btn-light btn-sm font-weight-bold'>
+															View Details
+														</Link>
 													</td>
 												</tr>
 											))}
