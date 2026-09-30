@@ -9,7 +9,6 @@ const Header = () => {
 	const dispatch = useDispatch();
 	const history = useHistory();
 	const [activeNav, setActiveNav] = useState('home');
-	const [showSearchModal, setShowSearchModal] = useState(false);
 
 	const userLogin = useSelector((state) => state.userLogin);
 	const { userInfo } = userLogin;
@@ -47,7 +46,7 @@ const Header = () => {
 
 	return (
 		<header className='sticky-top shadow-sm'>
-			{/* Top Announcement Bar (from MobiStore reference) */}
+			{/* Top Announcement Bar */}
 			<div
 				style={{
 					background: 'linear-gradient(90deg, #090e1a 0%, #1a103c 50%, #2e0854 100%)',
@@ -80,7 +79,7 @@ const Header = () => {
 				</Container>
 			</div>
 
-			{/* Sub-ticker Bar with Trust Icons (from MobiStore reference) */}
+			{/* Sub-ticker Bar */}
 			<div
 				style={{
 					background: '#ffffff',
@@ -110,7 +109,7 @@ const Header = () => {
 				</Container>
 			</div>
 
-			{/* Main MobiStore-Style Clean White Navbar */}
+			{/* Main Navbar */}
 			<Navbar
 				expand='lg'
 				style={{
@@ -152,7 +151,7 @@ const Header = () => {
 					<Navbar.Toggle aria-controls='mobistore-navbar-nav' />
 
 					<Navbar.Collapse id='mobistore-navbar-nav'>
-						{/* Center Menu Links (from MobiStore reference) */}
+						{/* Center Links */}
 						<Nav className='mx-auto align-items-center gap-1 my-2 my-lg-0' style={{ fontSize: '0.92rem', fontWeight: '600' }}>
 							<button
 								type='button'
@@ -209,23 +208,24 @@ const Header = () => {
 								Deals
 							</button>
 
-							<button
-								type='button'
-								onClick={() => handleNavClick('support', '/favorites')}
-								className={`mobistore-nav-link ${activeNav === 'support' ? 'active' : ''}`}
-							>
-								Saved
-							</button>
+							{userInfo && userInfo.isAdmin && (
+								<button
+									type='button'
+									onClick={() => handleNavClick('admin', '/admin/dashboard')}
+									className={`mobistore-nav-link ${activeNav === 'admin' ? 'active' : ''}`}
+									style={{ color: '#4f46e5', fontWeight: '700' }}
+								>
+									<i className='fas fa-chart-line mr-1'></i> Admin Center
+								</button>
+							)}
 						</Nav>
 
-						{/* Right Control Icons (from MobiStore reference) */}
+						{/* Right Icons */}
 						<div className='d-flex align-items-center gap-2 ml-lg-auto'>
-							{/* Search Box Trigger */}
-							<div className='position-relative' style={{ minWidth: '220px' }}>
+							<div className='position-relative' style={{ minWidth: '200px' }}>
 								<Route render={({ history: routeHistory }) => <SearchBox history={routeHistory} />} />
 							</div>
 
-							{/* Account Icon */}
 							{userInfo ? (
 								<NavDropdown
 									title={
@@ -237,11 +237,33 @@ const Header = () => {
 									alignRight
 								>
 									<NavDropdown.Item onClick={() => history.push('/profile')}>
-										<i className='fas fa-id-card mr-2 text-muted'></i>My Profile
+										<i className='fas fa-id-card mr-2 text-muted'></i>My Account
 									</NavDropdown.Item>
 									<NavDropdown.Item onClick={() => history.push('/favorites')}>
 										<i className='fas fa-heart mr-2 text-muted'></i>Saved Items
 									</NavDropdown.Item>
+
+									{userInfo.isAdmin && (
+										<>
+											<NavDropdown.Divider />
+											<div className='dropdown-header text-muted' style={{ fontSize: '0.7rem', textTransform: 'uppercase' }}>
+												Admin Tools
+											</div>
+											<NavDropdown.Item onClick={() => history.push('/admin/dashboard')}>
+												<i className='fas fa-chart-pie mr-2 text-primary'></i>Admin Dashboard
+											</NavDropdown.Item>
+											<NavDropdown.Item onClick={() => history.push('/admin/productlist')}>
+												<i className='fas fa-boxes mr-2 text-muted'></i>Products
+											</NavDropdown.Item>
+											<NavDropdown.Item onClick={() => history.push('/admin/orderlist')}>
+												<i className='fas fa-receipt mr-2 text-muted'></i>Orders
+											</NavDropdown.Item>
+											<NavDropdown.Item onClick={() => history.push('/admin/userlist')}>
+												<i className='fas fa-users mr-2 text-muted'></i>Users
+											</NavDropdown.Item>
+										</>
+									)}
+
 									<NavDropdown.Divider />
 									<NavDropdown.Item onClick={logoutHandler} className='text-danger'>
 										<i className='fas fa-sign-out-alt mr-2'></i>Logout
@@ -253,7 +275,6 @@ const Header = () => {
 								</Link>
 							)}
 
-							{/* Wishlist Heart Icon */}
 							<Link to='/favorites' className='mobistore-icon-btn position-relative' title='Saved Wishlist'>
 								<i className='far fa-heart'></i>
 								{favoritesCount > 0 && (
@@ -263,7 +284,6 @@ const Header = () => {
 								)}
 							</Link>
 
-							{/* Cart Shopping Bag Icon */}
 							<Link to='/cart' className='mobistore-icon-btn position-relative' title='Shopping Bag'>
 								<i className='fas fa-shopping-bag'></i>
 								{cartCount > 0 && (

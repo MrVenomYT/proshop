@@ -105,7 +105,7 @@ const ProductCarousel = () => {
 							<span style={{ color: '#38bdf8' }}>Brighter Days.</span>
 						</h1>
 
-						<h3 className='text-white font-weight-bold mb-3' style={{ fontSize: '1.25rem' }}>
+						<h3 className='text-white font-weight-bold mb-2' style={{ fontSize: '1.25rem' }}>
 							{currentProduct.name}
 						</h3>
 
@@ -138,15 +138,15 @@ const ProductCarousel = () => {
 							</Link>
 						</div>
 
-						{/* 3 Pillar Sub-Badges (from Voltix) */}
-						<div className='d-flex flex-wrap align-items-center gap-4 pt-3 border-top' style={{ borderColor: 'rgba(255,255,255,0.1)', fontSize: '0.8rem', color: '#cbd5e1' }}>
-							<div className='d-flex align-items-center mr-3'>
+						{/* 3 Pillar Sub-Badges */}
+						<div className='d-flex flex-wrap align-items-center gap-4 pt-3' style={{ fontSize: '0.8rem', color: '#cbd5e1' }}>
+							<div className='d-flex align-items-center mr-3 mb-2 mb-md-0'>
 								<i className='fas fa-bolt text-warning mr-2'></i> Innovative Technology
 							</div>
-							<div className='d-flex align-items-center mr-3'>
+							<div className='d-flex align-items-center mr-3 mb-2 mb-md-0'>
 								<i className='fas fa-check-circle text-success mr-2'></i> Official Warranty
 							</div>
-							<div className='d-flex align-items-center'>
+							<div className='d-flex align-items-center mb-2 mb-md-0'>
 								<i className='fas fa-truck text-primary mr-2'></i> Express Delivery
 							</div>
 						</div>
@@ -186,8 +186,8 @@ const ProductCarousel = () => {
 				</Row>
 			</div>
 
-			{/* Slide Navigation Controls */}
-			<div className='px-4 py-3 d-flex align-items-center justify-content-between border-top' style={{ borderColor: 'rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.25)' }}>
+			{/* Slide Navigation Controls Bar (Fixed Button Styling) */}
+			<div className='px-4 py-3 d-flex align-items-center justify-content-between border-top' style={{ borderColor: 'rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.3)' }}>
 				<div className='d-flex align-items-center gap-2'>
 					{products.map((item, idx) => (
 						<button
@@ -203,17 +203,41 @@ const ProductCarousel = () => {
 				<div className='d-flex gap-2'>
 					<button
 						type='button'
-						className='hero-nav-btn'
 						onClick={() =>
 							setCurrentIndex((prev) => (prev - 1 + products.length) % products.length)
 						}
+						style={{
+							width: '38px',
+							height: '38px',
+							borderRadius: '50%',
+							background: 'rgba(255, 255, 255, 0.12)',
+							border: '1px solid rgba(255, 255, 255, 0.25)',
+							color: '#ffffff',
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+							cursor: 'pointer',
+							fontSize: '0.9rem',
+						}}
 					>
 						<i className='fas fa-chevron-left'></i>
 					</button>
 					<button
 						type='button'
-						className='hero-nav-btn'
 						onClick={() => setCurrentIndex((prev) => (prev + 1) % products.length)}
+						style={{
+							width: '38px',
+							height: '38px',
+							borderRadius: '50%',
+							background: 'rgba(255, 255, 255, 0.12)',
+							border: '1px solid rgba(255, 255, 255, 0.25)',
+							color: '#ffffff',
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+							cursor: 'pointer',
+							fontSize: '0.9rem',
+						}}
 					>
 						<i className='fas fa-chevron-right'></i>
 					</button>
