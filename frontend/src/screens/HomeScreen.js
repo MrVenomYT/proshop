@@ -7,6 +7,8 @@ import Message from '../components/Message';
 import Loader from '../components/Loader';
 import Paginate from '../components/Paginate';
 import ProductCarousel from '../components/ProductCarousel';
+import BentoCollections from '../components/BentoCollections';
+import BrandLogosRow from '../components/BrandLogosRow';
 import Meta from '../components/Meta';
 import { listProducts } from '../actions/product-actions';
 
@@ -26,22 +28,22 @@ const HomeScreen = ({ match, history }) => {
 	}, [dispatch, keyword, pageNumber]);
 
 	const departmentFilters = [
-		{ id: 'all', label: 'All Catalog', icon: 'fas fa-th-large' },
-		{ id: 'hot', label: '🔥 Hot Deals', special: 'hot' },
-		{ id: 'sale', label: '🏷️ On Sale', special: 'sale' },
-		{ id: 'Smartphones & Tablets', label: 'Smartphones & Tablets', icon: 'fas fa-mobile-alt' },
-		{ id: 'Laptops & Handhelds', label: 'Laptops & Handhelds', icon: 'fas fa-laptop' },
-		{ id: 'PC Components & Desktops', label: 'PC Components & GPUs', icon: 'fas fa-microchip' },
-		{ id: 'Wearables & Smart Glasses', label: 'Wearables & Glasses', icon: 'fas fa-clock' },
-		{ id: 'Monitors & Displays', label: 'Monitors & Displays', icon: 'fas fa-desktop' },
-		{ id: 'Keyboards & Controllers', label: 'Input Peripherals', icon: 'fas fa-keyboard' },
-		{ id: 'Audio & Creator Gear', label: 'Audio & Studio', icon: 'fas fa-headphones' },
-		{ id: 'Power & Charging Hubs', label: 'Power & Charging', icon: 'fas fa-bolt' },
-		{ id: 'Storage & Backup', label: 'Storage & SSDs', icon: 'fas fa-hdd' },
-		{ id: 'Networking & Smart Home', label: 'Networking & Smart Home', icon: 'fas fa-wifi' },
+		{ id: 'all', label: 'All Catalog' },
+		{ id: 'hot', label: '🔥 Trending Now' },
+		{ id: 'sale', label: '🏷️ Best Deals' },
+		{ id: 'Smartphones & Tablets', label: 'Smartphones' },
+		{ id: 'Laptops & Handhelds', label: 'Laptops & PCs' },
+		{ id: 'PC Components & Desktops', label: 'PC & GPUs' },
+		{ id: 'Wearables & Smart Glasses', label: 'Wearables' },
+		{ id: 'Monitors & Displays', label: 'Monitors' },
+		{ id: 'Keyboards & Controllers', label: 'Peripherals' },
+		{ id: 'Audio & Creator Gear', label: 'Audio & Studio' },
+		{ id: 'Power & Charging Hubs', label: 'Power & Charging' },
+		{ id: 'Storage & Backup', label: 'Storage & SSDs' },
+		{ id: 'Networking & Smart Home', label: 'Networking' },
 	];
 
-	// Filter and sort products client-side for ultra-fast response
+	// Client-side filtering & sorting
 	const filteredProducts = useMemo(() => {
 		if (!products) return [];
 		let result = [...products];
@@ -71,70 +73,25 @@ const HomeScreen = ({ match, history }) => {
 		return result;
 	}, [products, activeFilter, sortBy]);
 
-	const handleFilterClick = (filterId) => {
-		setActiveFilter(filterId);
-	};
-
 	return (
 		<>
 			<Meta />
 
 			{!keyword ? (
 				<>
-					{/* Sales Flash Announcement Banner */}
-					<div
-						className='p-3 mb-4 rounded d-flex flex-column flex-md-row align-items-center justify-content-between text-white'
-						style={{
-							background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #31104b 100%)',
-							border: '1px solid rgba(255, 255, 255, 0.12)',
-							boxShadow: '0 8px 24px rgba(0, 0, 0, 0.25)',
-						}}
-					>
-						<div className='d-flex align-items-center mb-2 mb-md-0'>
-							<span
-								style={{
-									background: '#f59e0b',
-									color: '#000000',
-									fontWeight: '800',
-									fontSize: '0.75rem',
-									padding: '3px 8px',
-									borderRadius: '4px',
-									marginRight: '12px',
-									letterSpacing: '0.05em',
-								}}
-							>
-								LIMITED SALE
-							</span>
-							<div>
-								<span className='font-weight-bold'>Spring Hardware Fest:</span> Up to 40% OFF GPUs, Smart Watches & Studio Audio.
-							</div>
-						</div>
-						<div className='d-flex gap-2'>
-							<button
-								type='button'
-								onClick={() => setActiveFilter('sale')}
-								className='btn btn-warning btn-sm font-weight-bold mr-2'
-								style={{ borderRadius: '6px' }}
-							>
-								<i className='fas fa-tags mr-1'></i> Browse Deals
-							</button>
-							<button
-								type='button'
-								onClick={() => setActiveFilter('hot')}
-								className='btn btn-outline-light btn-sm font-weight-bold'
-								style={{ borderRadius: '6px' }}
-							>
-								🔥 Hot Items
-							</button>
-						</div>
-					</div>
-
+					{/* 1. Flagship Hero Showcase (from Voltix, TechNova & 19.76) */}
 					<ProductCarousel />
+
+					{/* 2. Shop by Brand Row (from TechNova) */}
+					<BrandLogosRow />
+
+					{/* 3. Featured Bento Collections & Category Icons (from Voltix, TechVerse & 19.76) */}
+					<BentoCollections />
 				</>
 			) : (
 				<div className='d-flex align-items-center justify-content-between mb-4'>
-					<Link to='/' className='btn btn-light'>
-						<i className='fas fa-arrow-left mr-2'></i> Back to All Products
+					<Link to='/' className='btn btn-light font-weight-bold'>
+						<i className='fas fa-arrow-left mr-2'></i> Back to Full Catalog
 					</Link>
 					<span className='text-muted'>
 						Results for &ldquo;<strong className='text-dark'>{keyword}</strong>&rdquo;
@@ -142,43 +99,43 @@ const HomeScreen = ({ match, history }) => {
 				</div>
 			)}
 
-			{/* Main Catalog Header & Filter Bar */}
+			{/* 4. Main Catalog Header & Filter Bar (from TechNova & Voltix) */}
 			<div className='d-flex flex-column flex-lg-row align-items-lg-center justify-content-between mb-3 gap-3'>
 				<div>
-					<h1 className='mb-1' style={{ fontSize: '1.75rem' }}>
-						{keyword ? `Search Results` : 'Curated Tech Hardware'}
-					</h1>
-					<p className='text-muted mb-0' style={{ fontSize: '0.9rem' }}>
-						Transparent background visuals, genuine creator gear, and enterprise-grade hardware.
+					<h2 className='mb-1' style={{ fontSize: '1.6rem' }}>
+						{keyword ? `Search Results` : 'Trending Hardware & Best Deals'}
+					</h2>
+					<p className='text-muted mb-0' style={{ fontSize: '0.88rem' }}>
+						Discover top-rated flagship devices with transparent visuals, verified reviews, and instant stock availability.
 					</p>
 				</div>
 
-				{/* Sort dropdown */}
+				{/* Sort control */}
 				<div className='d-flex align-items-center'>
 					<span className='text-muted mr-2 font-weight-bold' style={{ fontSize: '0.85rem' }}>Sort By:</span>
 					<select
 						value={sortBy}
 						onChange={(e) => setSortBy(e.target.value)}
 						className='form-control form-control-sm'
-						style={{ width: '180px', borderRadius: '8px', fontWeight: '500' }}
+						style={{ width: '180px', borderRadius: '8px', fontWeight: '600' }}
 					>
-						<option value='featured'>Featured & Top Picks</option>
+						<option value='featured'>Featured & Top Rated</option>
 						<option value='price-low'>Price: Low to High</option>
 						<option value='price-high'>Price: High to Low</option>
-						<option value='rating'>Highest Customer Rating</option>
+						<option value='rating'>Customer Rating</option>
 						<option value='discount'>Biggest Discount %</option>
 					</select>
 				</div>
 			</div>
 
-			{/* Department Filter Pills */}
+			{/* Department Filter Pills (from TechVerse) */}
 			{!keyword && (
 				<div className='category-filter-bar mb-4'>
 					{departmentFilters.map((dept) => (
 						<button
 							key={dept.id}
 							type='button'
-							onClick={() => handleFilterClick(dept.id)}
+							onClick={() => setActiveFilter(dept.id)}
 							className={`category-pill ${activeFilter === dept.id ? 'active' : ''}`}
 						>
 							{dept.label}
@@ -187,28 +144,29 @@ const HomeScreen = ({ match, history }) => {
 				</div>
 			)}
 
+			{/* Products Grid */}
 			{loading ? (
 				<Loader />
 			) : error ? (
 				<Message variant='danger'>{error}</Message>
 			) : filteredProducts.length === 0 ? (
-				<div className='text-center py-5'>
+				<div className='text-center py-5 bg-white rounded-16 p-4 border border-slate-200'>
 					<i className='fas fa-search fa-3x text-muted mb-3'></i>
-					<h3>No Products Match Your Filter</h3>
-					<p className='text-muted'>Try selecting a different department tab or resetting your search filter.</p>
+					<h3>No Products Match Your Selection</h3>
+					<p className='text-muted'>Try adjusting your department tab or resetting your filter.</p>
 					<button
 						type='button'
 						onClick={() => setActiveFilter('all')}
 						className='btn btn-primary mt-2 font-weight-bold'
 					>
-						Reset Department Filter
+						Show All Hardware Catalog
 					</button>
 				</div>
 			) : (
 				<>
-					<Row>
+					<Row className='g-3'>
 						{filteredProducts.map((product) => (
-							<Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+							<Col key={product._id} sm={12} md={6} lg={4} xl={3} className='mb-4'>
 								<Product product={product} />
 							</Col>
 						))}

@@ -1,72 +1,233 @@
-import React from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 const Footer = () => {
+	const [email, setEmail] = useState('');
+	const [subscribed, setSubscribed] = useState(false);
+
+	const handleSubscribe = (e) => {
+		e.preventDefault();
+		if (email) {
+			setSubscribed(true);
+			setEmail('');
+		}
+	};
+
 	return (
 		<footer>
 			<Container>
-				<Row className='gy-4'>
+				{/* 1. Four Pillar Trust Guarantee Bar (from Voltix, TechVerse & TechNova) */}
+				<Row className='py-4 mb-5 border-bottom border-slate-800 g-3 text-white' style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+					<Col md={3} sm={6} className='d-flex align-items-center gap-3 mb-3 mb-md-0'>
+						<div
+							style={{
+								width: '44px',
+								height: '44px',
+								borderRadius: '50%',
+								background: 'rgba(59, 130, 246, 0.15)',
+								color: '#60a5fa',
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'center',
+								fontSize: '1.2rem',
+								flexShrink: 0,
+							}}
+						>
+							<i className='fas fa-truck'></i>
+						</div>
+						<div>
+							<h4 className='text-white mb-0' style={{ fontSize: '0.9rem' }}>Free Express Shipping</h4>
+							<span className='text-muted' style={{ fontSize: '0.75rem', color: '#94a3b8' }}>On all orders over $50</span>
+						</div>
+					</Col>
+
+					<Col md={3} sm={6} className='d-flex align-items-center gap-3 mb-3 mb-md-0'>
+						<div
+							style={{
+								width: '44px',
+								height: '44px',
+								borderRadius: '50%',
+								background: 'rgba(16, 185, 129, 0.15)',
+								color: '#34d399',
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'center',
+								fontSize: '1.2rem',
+								flexShrink: 0,
+							}}
+						>
+							<i className='fas fa-shield-alt'></i>
+						</div>
+						<div>
+							<h4 className='text-white mb-0' style={{ fontSize: '0.9rem' }}>30-Day Money Back</h4>
+							<span className='text-muted' style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Hassle-free return policy</span>
+						</div>
+					</Col>
+
+					<Col md={3} sm={6} className='d-flex align-items-center gap-3 mb-3 mb-md-0'>
+						<div
+							style={{
+								width: '44px',
+								height: '44px',
+								borderRadius: '50%',
+								background: 'rgba(245, 158, 11, 0.15)',
+								color: '#fbbf24',
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'center',
+								fontSize: '1.2rem',
+								flexShrink: 0,
+							}}
+						>
+							<i className='fas fa-headset'></i>
+						</div>
+						<div>
+							<h4 className='text-white mb-0' style={{ fontSize: '0.9rem' }}>24/7 Creator Support</h4>
+							<span className='text-muted' style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Live expert assistance</span>
+						</div>
+					</Col>
+
+					<Col md={3} sm={6} className='d-flex align-items-center gap-3'>
+						<div
+							style={{
+								width: '44px',
+								height: '44px',
+								borderRadius: '50%',
+								background: 'rgba(239, 68, 68, 0.15)',
+								color: '#f87171',
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'center',
+								fontSize: '1.2rem',
+								flexShrink: 0,
+							}}
+						>
+							<i className='fas fa-lock'></i>
+						</div>
+						<div>
+							<h4 className='text-white mb-0' style={{ fontSize: '0.9rem' }}>Secure Payments</h4>
+							<span className='text-muted' style={{ fontSize: '0.75rem', color: '#94a3b8' }}>256-Bit bank grade SSL</span>
+						</div>
+					</Col>
+				</Row>
+
+				{/* 2. Newsletter Subscription Card (from Voltix & TechNova) */}
+				<div
+					className='p-4 p-md-5 mb-5 rounded-20 text-white'
+					style={{
+						background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+						border: '1px solid rgba(255,255,255,0.1)',
+						borderRadius: '20px',
+					}}
+				>
+					<Row className='align-items-center'>
+						<Col lg={6} className='mb-3 mb-lg-0'>
+							<div className='d-flex align-items-center gap-3'>
+								<i className='fas fa-paper-plane fa-2x text-primary mr-3'></i>
+								<div>
+									<h3 className='text-white mb-1' style={{ fontSize: '1.35rem' }}>Join the ProShop Tech Community</h3>
+									<p className='text-slate-400 mb-0' style={{ fontSize: '0.85rem', color: '#94a3b8' }}>
+										Get exclusive drops, early flash deal invites, and hardware setup guides delivered to your inbox.
+									</p>
+								</div>
+							</div>
+						</Col>
+
+						<Col lg={6}>
+							{subscribed ? (
+								<div className='p-3 bg-emerald-950 text-emerald-300 rounded font-weight-bold text-center' style={{ background: '#064e3b', color: '#6ee7b7' }}>
+									<i className='fas fa-check-circle mr-2'></i> Welcome! You are now subscribed to ProShop.
+								</div>
+							) : (
+								<Form onSubmit={handleSubscribe} className='d-flex gap-2'>
+									<Form.Control
+										type='email'
+										placeholder='Enter your email address...'
+										value={email}
+										onChange={(e) => setEmail(e.target.value)}
+										required
+										style={{
+											background: '#090e1a',
+											borderColor: 'rgba(255,255,255,0.15)',
+											color: '#ffffff',
+											borderRadius: '10px',
+										}}
+									/>
+									<Button type='submit' className='btn-accent font-weight-bold px-4' style={{ borderRadius: '10px', whiteSpace: 'nowrap' }}>
+										Subscribe
+									</Button>
+								</Form>
+							)}
+						</Col>
+					</Row>
+				</div>
+
+				{/* 3. Main Footer Links Column Grid */}
+				<Row className='gy-4 mb-4'>
 					{/* Brand Column */}
 					<Col lg={4} md={6} className='mb-4 mb-lg-0'>
 						<div className='footer-brand d-flex align-items-center mb-2'>
 							<i className='fas fa-cube text-primary mr-2'></i>
 							<span>PRO<span style={{ color: '#60a5fa' }}>SHOP</span></span>
 						</div>
-						<p className='text-muted' style={{ fontSize: '0.875rem', maxWidth: '300px' }}>
+						<p className='text-muted' style={{ fontSize: '0.875rem', maxWidth: '320px', lineHeight: '1.6' }}>
 							Premium electronics, high-fidelity acoustics, and hardware essentials built for creator workflows.
 						</p>
-						<div className='d-flex gap-3 text-muted mt-3' style={{ fontSize: '1.1rem' }}>
+						<div className='d-flex gap-3 text-muted mt-3' style={{ fontSize: '1.2rem' }}>
 							<span className='mr-3' style={{ cursor: 'pointer' }}><i className='fab fa-twitter'></i></span>
 							<span className='mr-3' style={{ cursor: 'pointer' }}><i className='fab fa-github'></i></span>
 							<span className='mr-3' style={{ cursor: 'pointer' }}><i className='fab fa-instagram'></i></span>
+							<span className='mr-3' style={{ cursor: 'pointer' }}><i className='fab fa-youtube'></i></span>
 						</div>
 					</Col>
 
-					{/* Quick Links */}
+					{/* Shop Categories */}
 					<Col lg={2} md={6} sm={6} className='mb-4 mb-lg-0'>
-						<h3 style={{ fontSize: '0.9rem', color: '#ffffff', letterSpacing: '0.05em' }}>STORE</h3>
+						<h3 style={{ fontSize: '0.9rem', color: '#ffffff', letterSpacing: '0.05em' }}>CATEGORIES</h3>
 						<div className='d-flex flex-column gap-2' style={{ fontSize: '0.85rem' }}>
-							<Link to='/' className='footer-link mb-2'>All Products</Link>
-							<Link to='/search/Electronics' className='footer-link mb-2'>Electronics</Link>
-							<Link to='/search/Audio' className='footer-link mb-2'>Audio & Sound</Link>
-							<Link to='/search/Apple' className='footer-link mb-2'>Apple Gear</Link>
+							<Link to='/search/Smartphones' className='footer-link mb-2'>Smartphones</Link>
+							<Link to='/search/Laptops' className='footer-link mb-2'>Laptops & PCs</Link>
+							<Link to='/search/Audio' className='footer-link mb-2'>Audio & Headphones</Link>
+							<Link to='/search/Wearables' className='footer-link mb-2'>Smartwatches</Link>
+							<Link to='/search/Gaming' className='footer-link mb-2'>Gaming Gear</Link>
 						</div>
 					</Col>
 
 					{/* Customer Support */}
 					<Col lg={3} md={6} sm={6} className='mb-4 mb-lg-0'>
-						<h3 style={{ fontSize: '0.9rem', color: '#ffffff', letterSpacing: '0.05em' }}>CUSTOMER SERVICE</h3>
+						<h3 style={{ fontSize: '0.9rem', color: '#ffffff', letterSpacing: '0.05em' }}>SUPPORT</h3>
 						<div className='d-flex flex-column gap-2' style={{ fontSize: '0.85rem' }}>
-							<span className='footer-link mb-2' style={{ cursor: 'pointer' }}>Track Your Order</span>
-							<span className='footer-link mb-2' style={{ cursor: 'pointer' }}>Shipping & Returns Policy</span>
-							<span className='footer-link mb-2' style={{ cursor: 'pointer' }}>1-Year Hardware Warranty</span>
+							<Link to='/profile' className='footer-link mb-2'>Track Order Status</Link>
+							<span className='footer-link mb-2' style={{ cursor: 'pointer' }}>Shipping & Return Policy</span>
+							<span className='footer-link mb-2' style={{ cursor: 'pointer' }}>2-Year Hardware Warranty</span>
 							<span className='footer-link mb-2' style={{ cursor: 'pointer' }}>Help Center & FAQ</span>
 						</div>
 					</Col>
 
-					{/* Trust & Guarantee */}
+					{/* App Download & Payment Methods (from Voltix & TechNova) */}
 					<Col lg={3} md={6}>
-						<h3 style={{ fontSize: '0.9rem', color: '#ffffff', letterSpacing: '0.05em' }}>PAYMENT & TRUST</h3>
+						<h3 style={{ fontSize: '0.9rem', color: '#ffffff', letterSpacing: '0.05em' }}>PAYMENT METHODS</h3>
 						<p className='text-muted' style={{ fontSize: '0.85rem' }}>
-							Guaranteed 100% secure payment checkout protected with Stripe 256-bit encryption.
+							Protected with 256-bit bank grade encryption.
 						</p>
-						<div className='d-flex gap-2 text-muted' style={{ fontSize: '1.4rem' }}>
-							<i className='fab fa-cc-stripe mr-2'></i>
-							<i className='fab fa-cc-visa mr-2'></i>
-							<i className='fab fa-cc-mastercard mr-2'></i>
-							<i className='fab fa-cc-apple-pay mr-2'></i>
+						<div className='d-flex gap-3 text-muted mb-3' style={{ fontSize: '1.6rem' }}>
+							<i className='fab fa-cc-visa mr-2 text-white'></i>
+							<i className='fab fa-cc-mastercard mr-2 text-white'></i>
+							<i className='fab fa-cc-apple-pay mr-2 text-white'></i>
+							<i className='fab fa-cc-paypal mr-2 text-white'></i>
 						</div>
 					</Col>
 				</Row>
 
 				<hr className='footer-divider' />
 
-				<div className='d-flex flex-column flex-md-row align-items-center justify-content-between' style={{ fontSize: '0.8rem' }}>
-					<div>&copy; {new Date().getFullYear()} PROSHOP Inc. All rights reserved.</div>
+				<div className='d-flex flex-column flex-md-row align-items-center justify-content-between' style={{ fontSize: '0.8rem', color: '#64748b' }}>
+					<div>&copy; {new Date().getFullYear()} PROSHOP Inc. All rights reserved. Designed for all devices.</div>
 					<div className='mt-2 mt-md-0'>
-						<span className='mr-3 text-muted'>Privacy Policy</span>
-						<span className='text-muted'>Terms of Service</span>
+						<span className='mr-3 text-muted' style={{ cursor: 'pointer' }}>Privacy Policy</span>
+						<span className='mr-3 text-muted' style={{ cursor: 'pointer' }}>Terms of Service</span>
+						<span className='text-muted' style={{ cursor: 'pointer' }}>Sitemap</span>
 					</div>
 				</div>
 			</Container>

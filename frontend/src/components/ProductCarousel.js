@@ -23,7 +23,7 @@ const ProductCarousel = () => {
 
 		const timer = setInterval(() => {
 			setCurrentIndex((prev) => (prev + 1) % products.length);
-		}, 5500);
+		}, 6000);
 
 		return () => clearInterval(timer);
 	}, [products, isPaused]);
@@ -43,49 +43,120 @@ const ProductCarousel = () => {
 
 	return (
 		<div
-			className='hero-showcase-container mb-5'
+			className='hero-showcase-container mb-4'
 			onMouseEnter={() => setIsPaused(true)}
 			onMouseLeave={() => setIsPaused(false)}
+			style={{
+				background: 'linear-gradient(135deg, #090e1a 0%, #111a2e 50%, #0d1527 100%)',
+				border: '1px solid rgba(255, 255, 255, 0.1)',
+				borderRadius: '24px',
+				overflow: 'hidden',
+				boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
+				position: 'relative',
+			}}
 		>
-			<div className='hero-slide'>
-				<div className='hero-slide-content'>
+			<div className='hero-slide p-4 p-md-5'>
+				<div className='hero-slide-content' style={{ zIndex: 2, maxWidth: '560px' }}>
 					<div className='d-flex align-items-center gap-2 mb-3'>
-						<span className='hero-kicker'>
-							<i className='fas fa-fire mr-1 text-warning'></i> FLAGSHIP SPOTLIGHT
+						<span
+							style={{
+								background: 'rgba(37, 99, 235, 0.2)',
+								border: '1px solid rgba(59, 130, 246, 0.4)',
+								color: '#60a5fa',
+								padding: '4px 12px',
+								borderRadius: '9999px',
+								fontSize: '0.75rem',
+								fontWeight: '800',
+								letterSpacing: '0.08em',
+								textTransform: 'uppercase',
+							}}
+						>
+							NEXT GENERATION FLAGSHIP
 						</span>
 						{discountPercent > 0 && (
-							<span className='badge-pill sale'>SAVE {discountPercent}%</span>
+							<span
+								style={{
+									background: '#ef4444',
+									color: '#ffffff',
+									padding: '4px 10px',
+									borderRadius: '9999px',
+									fontSize: '0.75rem',
+									fontWeight: '800',
+								}}
+							>
+								SAVE {discountPercent}%
+							</span>
 						)}
 					</div>
 
-					<h1 className='hero-title'>{currentProduct.name}</h1>
-					<p className='hero-description'>{currentProduct.description}</p>
+					<h1
+						className='hero-title mb-3'
+						style={{
+							fontSize: '2.5rem',
+							fontWeight: '800',
+							color: '#ffffff',
+							lineHeight: '1.15',
+							letterSpacing: '-0.03em',
+						}}
+					>
+						Smarter Devices.<br />
+						<span style={{ color: '#38bdf8' }}>Brighter Days.</span>
+					</h1>
 
-					<div className='mb-4'>
-						<Rating value={currentProduct.rating} text={`${currentProduct.numReviews} verified reviews`} />
+					<p className='hero-description text-slate-300 mb-4' style={{ fontSize: '0.98rem', color: '#94a3b8', lineHeight: '1.6' }}>
+						{currentProduct.description}
+					</p>
+
+					<div className='d-flex align-items-center mb-4'>
+						<Rating value={currentProduct.rating} text={`${currentProduct.numReviews} verified ratings`} />
 					</div>
 
-					<div className='hero-price-row'>
-						<div className='d-flex align-items-baseline mr-4'>
-							<div className='hero-price'>${Number(currentProduct.price).toFixed(2)}</div>
+					{/* Pricing & CTA */}
+					<div className='d-flex flex-wrap align-items-center gap-3 mb-4'>
+						<div className='d-flex align-items-baseline mr-3'>
+							<span style={{ fontSize: '2.2rem', fontWeight: '800', color: '#ffffff', fontFamily: 'var(--font-heading)' }}>
+								${Number(currentProduct.price).toFixed(2)}
+							</span>
 							{hasDiscount && (
-								<div className='hero-original-price ml-2'>
+								<span style={{ fontSize: '1.2rem', color: '#64748b', textDecoration: 'line-through', marginLeft: '10px' }}>
 									${Number(currentProduct.originalPrice).toFixed(2)}
-								</div>
+								</span>
 							)}
 						</div>
-						<Link to={`/product/${currentProduct._id}`} className='btn btn-accent px-4 py-2 font-weight-bold'>
-							Shop Now <i className='fas fa-arrow-right ml-2'></i>
+
+						<Link to={`/product/${currentProduct._id}`} className='btn btn-accent px-4 py-3 font-weight-bold'>
+							Shop Flagship <i className='fas fa-arrow-right ml-2'></i>
 						</Link>
+						<Link to='/search/sale' className='btn btn-outline-light px-4 py-3 font-weight-bold'>
+							Explore Deals
+						</Link>
+					</div>
+
+					{/* 3 Pillar Sub-Badges (from Voltix) */}
+					<div className='d-flex flex-wrap align-items-center gap-4 pt-3 border-top border-slate-800' style={{ fontSize: '0.8rem', color: '#cbd5e1' }}>
+						<div className='d-flex align-items-center'>
+							<i className='fas fa-bolt text-warning mr-2'></i> Innovative Tech
+						</div>
+						<div className='d-flex align-items-center'>
+							<i className='fas fa-check-circle text-success mr-2'></i> Official Warranty
+						</div>
+						<div className='d-flex align-items-center'>
+							<i className='fas fa-truck text-primary mr-2'></i> Express Delivery
+						</div>
 					</div>
 				</div>
 
+				{/* Floating High-Contrast Transparent Image (from TechVerse & Voltix) */}
 				<div className='hero-image-wrapper'>
 					<img
 						src={currentProduct.image}
 						alt={currentProduct.name}
 						style={{
-							filter: 'drop-shadow(0 20px 30px rgba(0, 0, 0, 0.25))',
+							maxHeight: '320px',
+							maxWidth: '100%',
+							objectFit: 'contain',
+							filter: 'drop-shadow(0 20px 30px rgba(0, 0, 0, 0.4))',
+							transition: 'transform 0.4s ease',
 						}}
 						onError={(e) => {
 							e.target.onerror = null;
@@ -95,20 +166,9 @@ const ProductCarousel = () => {
 				</div>
 			</div>
 
-			{/* Custom Slide Controls */}
-			<div className='hero-controls'>
-				<button
-					type='button'
-					className='hero-nav-btn prev'
-					onClick={() =>
-						setCurrentIndex((prev) => (prev - 1 + products.length) % products.length)
-					}
-					aria-label='Previous slide'
-				>
-					<i className='fas fa-chevron-left'></i>
-				</button>
-
-				<div className='hero-dots'>
+			{/* Slide Navigation Controls */}
+			<div className='hero-controls p-3 d-flex align-items-center justify-content-between border-top border-slate-800' style={{ background: 'rgba(0,0,0,0.2)' }}>
+				<div className='d-flex align-items-center gap-2'>
 					{products.map((item, idx) => (
 						<button
 							key={item._id}
@@ -120,14 +180,24 @@ const ProductCarousel = () => {
 					))}
 				</div>
 
-				<button
-					type='button'
-					className='hero-nav-btn next'
-					onClick={() => setCurrentIndex((prev) => (prev + 1) % products.length)}
-					aria-label='Next slide'
-				>
-					<i className='fas fa-chevron-right'></i>
-				</button>
+				<div className='d-flex gap-2'>
+					<button
+						type='button'
+						className='hero-nav-btn'
+						onClick={() =>
+							setCurrentIndex((prev) => (prev - 1 + products.length) % products.length)
+						}
+					>
+						<i className='fas fa-chevron-left'></i>
+					</button>
+					<button
+						type='button'
+						className='hero-nav-btn'
+						onClick={() => setCurrentIndex((prev) => (prev + 1) % products.length)}
+					>
+						<i className='fas fa-chevron-right'></i>
+					</button>
+				</div>
 			</div>
 		</div>
 	);

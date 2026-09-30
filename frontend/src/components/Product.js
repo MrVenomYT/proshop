@@ -1,11 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Rating from './Rating';
 import { addToFavorites, removeFavorite } from '../actions/user-actions';
+import { addToCart } from '../actions/cart-actions';
 
 const Product = ({ product, isFavorite: isFavoriteProp, removeFromFavorites }) => {
 	const dispatch = useDispatch();
+	const history = useHistory();
+
 	const userLogin = useSelector((state) => state.userLogin);
 	const { userInfo } = userLogin;
 
@@ -32,6 +35,15 @@ const Product = ({ product, isFavorite: isFavoriteProp, removeFromFavorites }) =
 			}
 		} else {
 			dispatch(addToFavorites(product, userInfo._id));
+		}
+	};
+
+	const quickAddToCartHandler = (e) => {
+		e.preventDefault();
+		e.stopPropagation();
+		if (product.countInStock > 0) {
+			dispatch(addToCart(productId, 1));
+			history.push('/cart');
 		}
 	};
 
@@ -93,9 +105,13 @@ const Product = ({ product, isFavorite: isFavoriteProp, removeFromFavorites }) =
 			</div>
 
 			<div className='product-body'>
-				<div className='d-flex align-items-center justify-content-between mb-1'>
-					<span className='product-category-kicker'>{product.brand || 'Hardware'}</span>
-					<span className='text-muted' style={{ fontSize: '0.75rem' }}>{product.category}</span>
+				{/* Clean unboxed metadata with typographic separators */}
+				<div className='d-flex align-items-center gap-1 mb-1 text-muted' style={{ fontSize: '0.75rem', fontWeight: '600' }}>
+					<span style={{ color: 'var(--color-text-main)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+						{product.brand || 'Hardware'}
+					</span>
+					<span aria-hidden='true'>·</span>
+					<span>{product.category}</span>
 				</div>
 
 				<Link to={`/product/${productId}`}>
@@ -114,7 +130,7 @@ const Product = ({ product, isFavorite: isFavoriteProp, removeFromFavorites }) =
 					)}
 				</div>
 
-				<div className='product-price-row mt-2'>
+				<div className='product-price-row mt-2 d-flex align-items-center justify-content-between'>
 					<div className='d-flex align-items-baseline gap-2'>
 						<span className='product-current-price'>${Number(product.price).toFixed(2)}</span>
 						{hasDiscount && (
@@ -123,6 +139,17 @@ const Product = ({ product, isFavorite: isFavoriteProp, removeFromFavorites }) =
 							</span>
 						)}
 					</div>
+
+					<button
+						type='button'
+						onClick={quickAddToCartHandler}
+						disabled={product.countInStock === 0}
+						className='btn btn-accent btn-sm font-weight-bold d-inline-flex align-items-center'
+						style={{ borderRadius: '8px', padding: '0.35rem 0.75rem', fontSize: '0.8rem' }}
+						title={product.countInStock > 0 ? 'Quick Add to Bag' : 'Sold Out'}
+					>
+						<i className='fas fa-shopping-bag mr-1'></i> Add
+					</button>
 				</div>
 			</div>
 		</div>
