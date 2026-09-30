@@ -1,20 +1,34 @@
 import mongoose from 'mongoose';
 
+let cachedPromise = null;
+
 const connectDb = async () => {
+  if (mongoose.connection.readyState === 1) {
+    return mongoose.connection;
+  }
+
+  if (cachedPromise) {
+    return cachedPromise;
+  }
+
   try {
     mongoose.set('bufferCommands', false);
     if (!process.env.MONGO_URI) {
       console.log('No MONGO_URI provided in environment. In-memory data store is active.');
-      return;
+      return null;
     }
 
-    const conn = await mongoose.connect(process.env.MONGO_URI, {
-      serverSelectionTimeoutMS: 2000,
+    cachedPromise = mongoose.connect(process.env.MONGO_URI, {
+      serverSelectionTimeoutMS: 3000,
     });
 
-    console.log(`MongoDB connected: ${conn.connection.host}`.cyan.underline);
+    const conn = await cachedPromise;
+    console.log(`MongoDB connected: ${conn.connection.host}`);
+    return conn;
   } catch (error) {
-    console.warn(`MongoDB not connected (${error.message}). Using in-memory fallback.`);
+    cachedPromise = null;
+    console.warn(`MongoDB connection notice (${error.message}). Using in-memory fallback.`);
+    return null;
   }
 };
 

@@ -1,9 +1,10 @@
 import asyncHandler from 'express-async-handler';
 import generateToken from '../utils/generate-token.js';
 import UserModel from '../models/user-model.js';
+import AuthSessionModel from '../models/auth-session-model.js';
 import { isDbConnected, memDb } from '../config/in-memory-db.js';
 
-// @description     Auth user & get token
+// @description     Auth user & get token (Sign In)
 // @route           POST /api/users/login
 // @access          Public
 const authUser = asyncHandler(async (req, res) => {
@@ -13,17 +14,53 @@ const authUser = asyncHandler(async (req, res) => {
 	const user = await User.findOne({ email });
 
 	if (user && (await user.matchPassword(password))) {
+		const token = generateToken(user._id);
+
+		// Record active sign-in session
+		if (isDbConnected()) {
+			try {
+				await AuthSessionModel.create({
+					user: user._id,
+					token,
+					ipAddress: req.ip || req.connection?.remoteAddress || '127.0.0.1',
+					userAgent: req.headers['user-agent'] || 'Web Browser',
+					signedInAt: new Date(),
+					isActive: true,
+				});
+			} catch (e) {
+				console.warn('Session logging note:', e.message);
+			}
+		}
+
 		res.json({
 			_id: user._id,
 			name: user.name,
 			email: user.email,
 			isAdmin: user.isAdmin,
-			token: generateToken(user._id),
+			token,
 		});
 	} else {
 		res.status(401);
 		throw new Error('Invalid email or password');
 	}
+});
+
+// @description     Sign out & terminate session
+// @route           POST /api/users/logout
+// @access          Private
+const logoutUser = asyncHandler(async (req, res) => {
+	const token = req.headers.authorization?.split(' ')[1];
+	if (isDbConnected() && token) {
+		try {
+			await AuthSessionModel.updateMany(
+				{ user: req.user._id, token, isActive: true },
+				{ isActive: false, signedOutAt: new Date() }
+			);
+		} catch (e) {
+			console.warn('Session logout note:', e.message);
+		}
+	}
+	res.json({ message: 'Signed out successfully' });
 });
 
 // @description     Register a new user
@@ -47,12 +84,29 @@ const registerUser = asyncHandler(async (req, res) => {
 	});
 
 	if (user) {
+		const token = generateToken(user._id);
+
+		if (isDbConnected()) {
+			try {
+				await AuthSessionModel.create({
+					user: user._id,
+					token,
+					ipAddress: req.ip || '127.0.0.1',
+					userAgent: req.headers['user-agent'] || 'Web Browser',
+					signedInAt: new Date(),
+					isActive: true,
+				});
+			} catch (e) {
+				console.warn('Session note:', e.message);
+			}
+		}
+
 		res.status(201).json({
 			_id: user._id,
 			name: user.name,
 			email: user.email,
 			isAdmin: user.isAdmin,
-			token: generateToken(user._id),
+			token,
 		});
 	} else {
 		res.status(400);
@@ -232,7 +286,7 @@ const removeFavoriteProduct = asyncHandler(async (req, res) => {
 		});
 	} else {
 		res.status(404);
-		throw new Error('User not found');
+		throw new Error('Product not found');
 	}
 });
 
@@ -253,6 +307,7 @@ const getFavoriteProducts = asyncHandler(async (req, res) => {
 
 export {
 	authUser,
+	logoutUser,
 	getUserProfile,
 	registerUser,
 	updateUserProfile,

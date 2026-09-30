@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { LinkContainer } from 'react-router-bootstrap';
-import { Table, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { Table, Card } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
@@ -26,57 +26,80 @@ const OrderListScreen = ({ history }) => {
 
 	return (
 		<>
-			<Meta title='Order List' />
-			<h1>Orders</h1>
+			<Meta title='Manage Orders | ProShop Admin' />
+
+			<div className='d-flex align-items-center justify-content-between mb-4'>
+				<div>
+					<h1 className='mb-1'>Customer Orders</h1>
+					<p className='text-muted mb-0'>Monitor store transactions, payment verification, and order deliveries.</p>
+				</div>
+			</div>
+
 			{loading ? (
 				<Loader />
 			) : error ? (
 				<Message variant='danger'>{error}</Message>
 			) : (
-				<Table striped bordered hover responsive className='table-sm'>
-					<thead>
-						<tr>
-							<th>ID</th>
-							<th>USER</th>
-							<th>DATE</th>
-							<th>TOTAL</th>
-							<th>PAID</th>
-							<th>DELIVERED</th>
-							<th></th>
-						</tr>
-					</thead>
-					<tbody>
-						{orders.map((order) => (
-							<tr key={order._id}>
-								<td>{order._id}</td>
-								<td>{order.user && order.user.name}</td>
-								<td>{order.createdAt.substring(0, 10)}</td>
-								<td>${order.totalPrice}</td>
-								<td>
-									{order.isPaid ? (
-										order.paidAt.substring(0, 10)
-									) : (
-										<i className='fas fa-times' style={{ color: 'red' }}></i>
-									)}
-								</td>
-								<td>
-									{order.isDelivered ? (
-										order.deliveredAt.substring(0, 10)
-									) : (
-										<i className='fas fa-times' style={{ color: 'red' }}></i>
-									)}
-								</td>
-								<td>
-									<LinkContainer to={`/order/${order._id}`}>
-										<Button variant='light' className='btn-sm'>
-											Details
-										</Button>
-									</LinkContainer>
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</Table>
+				<Card className='p-0 overflow-hidden' style={{ borderRadius: '16px' }}>
+					<div className='table-responsive'>
+						<Table hover className='mb-0'>
+							<thead>
+								<tr>
+									<th>ORDER ID</th>
+									<th>CUSTOMER</th>
+									<th>DATE</th>
+									<th>TOTAL</th>
+									<th>PAYMENT</th>
+									<th>DELIVERY</th>
+									<th>ACTIONS</th>
+								</tr>
+							</thead>
+							<tbody>
+								{orders.map((order) => (
+									<tr key={order._id}>
+										<td className='font-weight-bold' style={{ fontVariantNumeric: 'tabular-nums' }}>
+											#{order._id.slice(-6).toUpperCase()}
+										</td>
+										<td>{order.user ? order.user.name : 'Guest User'}</td>
+										<td className='text-muted' style={{ fontVariantNumeric: 'tabular-nums' }}>
+											{order.createdAt ? order.createdAt.substring(0, 10) : 'Recent'}
+										</td>
+										<td className='font-weight-bold' style={{ fontVariantNumeric: 'tabular-nums' }}>
+											${Number(order.totalPrice).toFixed(2)}
+										</td>
+										<td>
+											{order.isPaid ? (
+												<span className='status-pill success'>
+													<i className='fas fa-check-circle mr-1'></i> Paid ({order.paidAt?.substring(0, 10)})
+												</span>
+											) : (
+												<span className='status-pill danger'>
+													<i className='fas fa-times-circle mr-1'></i> Unpaid
+												</span>
+											)}
+										</td>
+										<td>
+											{order.isDelivered ? (
+												<span className='status-pill success'>
+													<i className='fas fa-truck mr-1'></i> Delivered
+												</span>
+											) : (
+												<span className='status-pill' style={{ background: '#fef3c7', color: '#92400e' }}>
+													<i className='fas fa-clock mr-1'></i> Processing
+												</span>
+											)}
+										</td>
+										<td>
+											<Link to={`/order/${order._id}`} className='btn btn-light btn-sm font-weight-bold'>
+												Review
+											</Link>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</Table>
+					</div>
+				</Card>
 			)}
 		</>
 	);

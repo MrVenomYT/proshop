@@ -1,39 +1,12 @@
 import path from 'path';
 import fs from 'fs';
 import express from 'express';
-import dotenv from 'dotenv';
-import colors from 'colors';
-import morgan from 'morgan';
+import app from './app.js';
 import connectDb from './config/db.js';
-import productRoutes from './routes/product-routes.js';
-import userRoutes from './routes/user-routes.js';
-import orderRoutes from './routes/order-routes.js';
-import paymentRoutes from './routes/payment-routes.js';
-import uploadRoutes from './routes/upload-routes.js';
-import { notFound, errorHandler } from './middleware/error-middleware.js';
+import { notFound } from './middleware/error-middleware.js';
 
-// define environment variables
-dotenv.config();
-
-// start connection
+// Connect DB
 connectDb();
-
-// create api server
-const app = express();
-
-if (process.env.NODE_ENV === 'development') {
-	app.use(morgan('dev'));
-}
-
-// accept json data in the body
-app.use(express.json());
-
-// API routes
-app.use('/api/products', productRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/payments', paymentRoutes);
-app.use('/api/upload', uploadRoutes);
 
 const __dirname = path.resolve();
 
@@ -86,11 +59,8 @@ app.get('*', (req, res, next) => {
 	}
 });
 
-// not found middleware
+// not found middleware for unmatched api routes
 app.use(notFound);
-
-// custom error middleware
-app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 
@@ -99,7 +69,7 @@ app.listen(
 	'0.0.0.0',
 	() => {
 		console.log(
-			`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT} at http://0.0.0.0:${PORT}`.yellow.bold
+			`Server running on port ${PORT} at http://0.0.0.0:${PORT}`.yellow.bold
 		);
 	}
 );

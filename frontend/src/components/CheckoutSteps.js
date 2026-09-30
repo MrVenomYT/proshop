@@ -1,47 +1,36 @@
 import React from 'react';
-import { Nav } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
+import { Link } from 'react-router-dom';
 
 const CheckoutSteps = ({ step1, step2, step3, step4 }) => {
+	const steps = [
+		{ number: 1, title: 'Sign In', link: '/login', active: step1 },
+		{ number: 2, title: 'Shipping', link: '/shipping', active: step2 },
+		{ number: 3, title: 'Payment', link: '/payment', active: step3 },
+		{ number: 4, title: 'Place Order', link: '/placeorder', active: step4 },
+	];
+
 	return (
-		<Nav className='justify-content-center mb-4'>
-			<Nav.Item>
-				{step1 ? (
-					<LinkContainer to='/login'>
-						<Nav.Link>Sign In</Nav.Link>
-					</LinkContainer>
-				) : (
-					<Nav.Link disabled>Sign In</Nav.Link>
-				)}
-			</Nav.Item>
-			<Nav.Item>
-				{step2 ? (
-					<LinkContainer to='/shipping'>
-						<Nav.Link>Shipping</Nav.Link>
-					</LinkContainer>
-				) : (
-					<Nav.Link disabled>Shipping</Nav.Link>
-				)}
-			</Nav.Item>
-			<Nav.Item>
-				{step3 ? (
-					<LinkContainer to='/payment'>
-						<Nav.Link>Payment</Nav.Link>
-					</LinkContainer>
-				) : (
-					<Nav.Link disabled>Payment</Nav.Link>
-				)}
-			</Nav.Item>
-			<Nav.Item>
-				{step4 ? (
-					<LinkContainer to='/placeorder'>
-						<Nav.Link>Place Order</Nav.Link>
-					</LinkContainer>
-				) : (
-					<Nav.Link disabled>Place Order</Nav.Link>
-				)}
-			</Nav.Item>
-		</Nav>
+		<div className='checkout-steps-bar'>
+			{steps.map((step, idx) => (
+				<React.Fragment key={step.number}>
+					{step.active ? (
+						<Link
+							to={step.link}
+							className={`checkout-step-item ${step.active ? 'active' : ''}`}
+						>
+							<span className='step-number'>{step.number}</span>
+							<span>{step.title}</span>
+						</Link>
+					) : (
+						<div className='checkout-step-item'>
+							<span className='step-number'>{step.number}</span>
+							<span>{step.title}</span>
+						</div>
+					)}
+					{idx < steps.length - 1 && <span className='step-divider'>&rsaquo;</span>}
+				</React.Fragment>
+			))}
+		</div>
 	);
 };
 

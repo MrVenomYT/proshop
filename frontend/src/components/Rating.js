@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Rating = ({ value, text, color }) => {
+const Rating = ({ value = 0, text = '', color = '#f59e0b' }) => {
 	return (
 		<div className='rating'>
 			<span>
@@ -12,7 +12,7 @@ const Rating = ({ value, text, color }) => {
 							? 'fas fa-star'
 							: value >= 0.5
 							? 'fas fa-star-half-alt'
-							: 'far fa-star'
+							: 'far fa-star text-muted'
 					}
 				></i>
 			</span>
@@ -24,7 +24,7 @@ const Rating = ({ value, text, color }) => {
 							? 'fas fa-star'
 							: value >= 1.5
 							? 'fas fa-star-half-alt'
-							: 'far fa-star'
+							: 'far fa-star text-muted'
 					}
 				></i>
 			</span>
@@ -36,7 +36,7 @@ const Rating = ({ value, text, color }) => {
 							? 'fas fa-star'
 							: value >= 2.5
 							? 'fas fa-star-half-alt'
-							: 'far fa-star'
+							: 'far fa-star text-muted'
 					}
 				></i>
 			</span>
@@ -48,7 +48,7 @@ const Rating = ({ value, text, color }) => {
 							? 'fas fa-star'
 							: value >= 3.5
 							? 'fas fa-star-half-alt'
-							: 'far fa-star'
+							: 'far fa-star text-muted'
 					}
 				></i>
 			</span>
@@ -60,24 +60,18 @@ const Rating = ({ value, text, color }) => {
 							? 'fas fa-star'
 							: value >= 4.5
 							? 'fas fa-star-half-alt'
-							: 'far fa-star'
+							: 'far fa-star text-muted'
 					}
 				></i>
 			</span>
-			<span>{text && text}</span>
+			{text && <span className='rating-text'>({text})</span>}
 		</div>
 	);
 };
 
-Rating.defaultProps = {
-	value: 0,
-	text: '',
-	color: '#f8e825',
-};
-
 Rating.propTypes = {
-	value: PropTypes.number.isRequired,
-	text: PropTypes.string.isRequired,
+	value: PropTypes.number,
+	text: PropTypes.string,
 	color: PropTypes.string,
 };
 

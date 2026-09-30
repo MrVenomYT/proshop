@@ -39,58 +39,78 @@ const RegisterScreen = ({ location, history }) => {
 
 	return (
 		<FormContainer>
-			<Meta title='Register' />
-			<h1>Sign Up</h1>
+			<Meta title='Create Account | ProShop' />
+
+			<div className='text-center mb-4'>
+				<i className='fas fa-user-plus text-primary fa-2x mb-2'></i>
+				<h1 className='mb-1'>Create Account</h1>
+				<p className='text-muted' style={{ fontSize: '0.9rem' }}>
+					Join ProShop to track orders, save favorites, and enjoy fast checkout.
+				</p>
+			</div>
+
 			{message && <Message variant='danger'>{message}</Message>}
 			{error && <Message variant='danger'>{error}</Message>}
 			{loading && <Loader />}
+
 			<Form onSubmit={submitHandler}>
-				<Form.Group controlId='name'>
-					<Form.Label>Name</Form.Label>
+				<Form.Group controlId='name' className='mb-3'>
+					<Form.Label className='font-weight-bold'>Full Name</Form.Label>
 					<Form.Control
-						type='name'
-						placeholder='Enter name'
+						type='text'
+						placeholder='e.g. Alex Taylor'
 						value={name}
 						onChange={(e) => setName(e.target.value)}
-					></Form.Control>
+						required
+					/>
 				</Form.Group>
-				<Form.Group controlId='email'>
-					<Form.Label>Email Address</Form.Label>
+
+				<Form.Group controlId='email' className='mb-3'>
+					<Form.Label className='font-weight-bold'>Email Address</Form.Label>
 					<Form.Control
 						type='email'
-						placeholder='Enter email'
+						placeholder='name@example.com'
 						value={email}
 						onChange={(e) => setEmail(e.target.value)}
-					></Form.Control>
+						required
+					/>
 				</Form.Group>
-				<Form.Group controlId='password'>
-					<Form.Label>Password</Form.Label>
+
+				<Form.Group controlId='password' className='mb-3'>
+					<Form.Label className='font-weight-bold'>Password</Form.Label>
 					<Form.Control
 						type='password'
-						placeholder='Enter password'
+						placeholder='At least 6 characters'
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
-					></Form.Control>
+						required
+					/>
 				</Form.Group>
-				<Form.Group controlId='confirmPassword'>
-					<Form.Label>Confirm Password</Form.Label>
+
+				<Form.Group controlId='confirmPassword' className='mb-4'>
+					<Form.Label className='font-weight-bold'>Confirm Password</Form.Label>
 					<Form.Control
 						type='password'
-						placeholder='Confirm password'
+						placeholder='Re-type password'
 						value={confirmPassword}
 						onChange={(e) => setConfirmPassword(e.target.value)}
-					></Form.Control>
+						required
+					/>
 				</Form.Group>
-				<Button type='submit' variant='primary'>
-					Register
+
+				<Button type='submit' className='btn-accent btn-block py-2 mb-3'>
+					Create ProShop Account
 				</Button>
 			</Form>
 
-			<Row className='py-3'>
-				<Col>
-					Have an Account?{' '}
-					<Link to={redirect ? `/login?redirect=${redirect}` : '/login'}>
-						Login
+			<Row className='pt-3 text-center'>
+				<Col className='text-muted' style={{ fontSize: '0.875rem' }}>
+					Already have an account?{' '}
+					<Link
+						to={redirect ? `/login?redirect=${redirect}` : '/login'}
+						className='font-weight-bold text-primary'
+					>
+						Sign In
 					</Link>
 				</Col>
 			</Row>
