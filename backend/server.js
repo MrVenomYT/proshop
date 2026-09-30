@@ -1,4 +1,5 @@
 import path from 'path';
+import fs from 'fs';
 import express from 'express';
 import dotenv from 'dotenv';
 import colors from 'colors';
@@ -27,28 +28,63 @@ if (process.env.NODE_ENV === 'development') {
 // accept json data in the body
 app.use(express.json());
 
+// API routes
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/upload', uploadRoutes);
 
-// make uploads folder static
-const __dirname = path.resolve(); // for es modules __dirname is only available if we're using commonjs
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+const __dirname = path.resolve();
 
-// set frontend build folder as a static folder
-if (process.env.NODE_ENV === 'production') {
-	app.use(express.static(path.join(__dirname, '/frontend/build')));
-
-	app.get('*', (req, res) =>
-		res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'))
-	);
-} else {
-	app.get('/', (req, res) => {
-		res.send('API is runninmg');
-	});
+// Ensure uploads folder exists
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+	fs.mkdirSync(uploadsDir, { recursive: true });
 }
+app.use('/uploads', express.static(uploadsDir));
+
+// Serve static images
+const publicImagesDir = path.join(__dirname, 'public', 'images');
+const frontendImagesDir = path.join(__dirname, 'frontend', 'public', 'images');
+const distImagesDir = path.join(__dirname, 'dist', 'images');
+
+if (fs.existsSync(publicImagesDir)) {
+	app.use('/images', express.static(publicImagesDir));
+}
+if (fs.existsSync(frontendImagesDir)) {
+	app.use('/images', express.static(frontendImagesDir));
+}
+if (fs.existsSync(distImagesDir)) {
+	app.use('/images', express.static(distImagesDir));
+}
+
+// Serve dist / static frontend
+const distDir = path.join(__dirname, 'dist');
+if (fs.existsSync(distDir)) {
+	app.use(express.static(distDir));
+}
+const frontendBuildDir = path.join(__dirname, 'frontend', 'build');
+if (fs.existsSync(frontendBuildDir)) {
+	app.use(express.static(frontendBuildDir));
+}
+
+// SPA fallback
+app.get('*', (req, res, next) => {
+	if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
+		return next();
+	}
+	const distIndex = path.join(distDir, 'index.html');
+	const frontendIndex = path.join(frontendBuildDir, 'index.html');
+
+	if (fs.existsSync(distIndex)) {
+		return res.sendFile(distIndex);
+	} else if (fs.existsSync(frontendIndex)) {
+		return res.sendFile(frontendIndex);
+	} else {
+		return res.send('Frontend is building. Please refresh in a moment.');
+	}
+});
 
 // not found middleware
 app.use(notFound);
@@ -56,11 +92,14 @@ app.use(notFound);
 // custom error middleware
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 app.listen(
 	PORT,
-	console.log(
-		`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.yellow.bold
-	)
+	'0.0.0.0',
+	() => {
+		console.log(
+			`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT} at http://0.0.0.0:${PORT}`.yellow.bold
+		);
+	}
 );

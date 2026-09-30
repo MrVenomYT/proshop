@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler';
-import Product from '../models/product-model.js';
+import ProductModel from '../models/product-model.js';
+import { isDbConnected, memDb } from '../config/in-memory-db.js';
 
 // @description     Fetch all products
 // @route           GET /api/products
@@ -18,6 +19,8 @@ const getProducts = asyncHandler(async (req, res) => {
 		  }
 		: {};
 
+	const Product = isDbConnected() ? ProductModel : memDb.Product;
+
 	const count = await Product.countDocuments({ ...keyword });
 	const products = await Product.find({ ...keyword })
 		.limit(pageSize)
@@ -26,7 +29,7 @@ const getProducts = asyncHandler(async (req, res) => {
 	res.json({
 		products,
 		page,
-		pages: Math.ceil(count / pageSize),
+		pages: Math.max(1, Math.ceil(count / pageSize)),
 	});
 });
 
@@ -34,6 +37,7 @@ const getProducts = asyncHandler(async (req, res) => {
 // @route           GET /api/products/:id
 // @access          Public
 const getProductById = asyncHandler(async (req, res) => {
+	const Product = isDbConnected() ? ProductModel : memDb.Product;
 	const product = await Product.findById(req.params.id);
 
 	if (product) {
@@ -48,10 +52,15 @@ const getProductById = asyncHandler(async (req, res) => {
 // @route           DELETE /api/products/:id
 // @access          Private/Admin
 const deleteProduct = asyncHandler(async (req, res) => {
+	const Product = isDbConnected() ? ProductModel : memDb.Product;
 	const product = await Product.findById(req.params.id);
 
 	if (product) {
-		await product.remove();
+		if (typeof product.remove === 'function') {
+			await product.remove();
+		} else if (typeof product.deleteOne === 'function') {
+			await product.deleteOne();
+		}
 		res.json({ message: 'Product removed' });
 	} else {
 		res.status(404);
@@ -63,20 +72,35 @@ const deleteProduct = asyncHandler(async (req, res) => {
 // @route           POST /api/products
 // @access          Private/Admin
 const createProduct = asyncHandler(async (req, res) => {
-	const product = new Product({
-		name: 'Sample Name',
-		price: 0,
-		user: req.user._id,
-		image: '/images/sample.jpg',
-		brand: 'Sample brand',
-		category: 'Sample Category',
-		countInStock: 0,
-		numReviews: 0,
-		description: 'Sample description',
-	});
-
-	const createdProduct = await product.save();
-	res.status(201).json(createdProduct);
+	if (isDbConnected()) {
+		const product = new ProductModel({
+			name: 'Sample Name',
+			price: 0,
+			user: req.user._id,
+			image: '/images/sample.jpg',
+			brand: 'Sample brand',
+			category: 'Sample Category',
+			countInStock: 0,
+			numReviews: 0,
+			description: 'Sample description',
+		});
+		const createdProduct = await product.save();
+		res.status(201).json(createdProduct);
+	} else {
+		const product = memDb.Product.createInstance({
+			name: 'Sample Name',
+			price: 0,
+			user: req.user._id,
+			image: '/images/sample.jpg',
+			brand: 'Sample brand',
+			category: 'Sample Category',
+			countInStock: 0,
+			numReviews: 0,
+			description: 'Sample description',
+		});
+		const createdProduct = await product.save();
+		res.status(201).json(createdProduct);
+	}
 });
 
 // @description     Update a product
@@ -93,6 +117,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 		countInStock,
 	} = req.body;
 
+	const Product = isDbConnected() ? ProductModel : memDb.Product;
 	const product = await Product.findById(req.params.id);
 
 	if (product) {
@@ -117,12 +142,12 @@ const updateProduct = asyncHandler(async (req, res) => {
 // @access          Private
 const createProductReview = asyncHandler(async (req, res) => {
 	const { rating, comment } = req.body;
-
+	const Product = isDbConnected() ? ProductModel : memDb.Product;
 	const product = await Product.findById(req.params.id);
 
 	if (product) {
-		const alreadyReviewed = product.reviews.find(
-			(r) => r.user.toString() === req.user._id.toString()
+		const alreadyReviewed = (product.reviews || []).find(
+			(r) => (r.user?._id || r.user)?.toString() === req.user._id.toString()
 		);
 
 		if (alreadyReviewed) {
@@ -137,6 +162,7 @@ const createProductReview = asyncHandler(async (req, res) => {
 			user: req.user._id,
 		};
 
+		if (!product.reviews) product.reviews = [];
 		product.reviews.push(review);
 		product.numReviews = product.reviews.length;
 		product.rating =
@@ -155,6 +181,7 @@ const createProductReview = asyncHandler(async (req, res) => {
 // @route           GET /api/products/top
 // @access          Public
 const getTopProducts = asyncHandler(async (req, res) => {
+	const Product = isDbConnected() ? ProductModel : memDb.Product;
 	const products = await Product.find({}).sort({ rating: -1 }).limit(3);
 
 	res.json(products);

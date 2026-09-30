@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import asyncHandler from 'express-async-handler';
-import User from '../models/user-model.js';
+import UserModel from '../models/user-model.js';
+import { isDbConnected, memDb } from '../config/in-memory-db.js';
 
 // asyncHandler for handling exceptions and prevent hanging on request!
 const protect = asyncHandler(async (req, res, next) => {
@@ -13,15 +14,21 @@ const protect = asyncHandler(async (req, res, next) => {
 		try {
 			token = req.headers.authorization.split(' ')[1];
 
-			const decoded = jwt.verify(token, process.env.JWT_SECRET);
+			const decoded = jwt.verify(token, process.env.JWT_SECRET || 'proshop_default_secret_key_2026');
 
+			const User = isDbConnected() ? UserModel : memDb.User;
 			req.user = await User.findById(decoded.id).select('-password');
+
+			if (!req.user) {
+				res.status(401);
+				throw new Error('Not authorized, user not found');
+			}
 
 			next();
 		} catch (error) {
 			console.error(error);
 			res.status(401);
-			throw new Error('Not authrozied, token failed');
+			throw new Error('Not authorized, token failed');
 		}
 	}
 

@@ -1,12 +1,14 @@
 import asyncHandler from 'express-async-handler';
 import generateToken from '../utils/generate-token.js';
-import User from '../models/user-model.js';
+import UserModel from '../models/user-model.js';
+import { isDbConnected, memDb } from '../config/in-memory-db.js';
 
 // @description     Auth user & get token
 // @route           POST /api/users/login
 // @access          Public
 const authUser = asyncHandler(async (req, res) => {
 	const { email, password } = req.body;
+	const User = isDbConnected() ? UserModel : memDb.User;
 
 	const user = await User.findOne({ email });
 
@@ -29,6 +31,7 @@ const authUser = asyncHandler(async (req, res) => {
 // @access          Public
 const registerUser = asyncHandler(async (req, res) => {
 	const { name, email, password } = req.body;
+	const User = isDbConnected() ? UserModel : memDb.User;
 
 	const userExists = await User.findOne({ email });
 
@@ -61,6 +64,7 @@ const registerUser = asyncHandler(async (req, res) => {
 // @route           GET /api/users/profile
 // @access          Private
 const getUserProfile = asyncHandler(async (req, res) => {
+	const User = isDbConnected() ? UserModel : memDb.User;
 	const user = await User.findById(req.user._id);
 
 	if (user) {
@@ -71,7 +75,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
 			isAdmin: user.isAdmin,
 		});
 	} else {
-		res.send(404);
+		res.status(404);
 		throw new Error('User not found');
 	}
 });
@@ -80,6 +84,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
 // @route           PUT /api/users/profile
 // @access          Private
 const updateUserProfile = asyncHandler(async (req, res) => {
+	const User = isDbConnected() ? UserModel : memDb.User;
 	const user = await User.findById(req.user._id);
 
 	if (user) {
@@ -100,7 +105,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 			token: generateToken(updatedUser._id),
 		});
 	} else {
-		res.send(404);
+		res.status(404);
 		throw new Error('User not found');
 	}
 });
@@ -109,6 +114,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 // @route           GET /api/users
 // @access          Private/Admin
 const getUsers = asyncHandler(async (req, res) => {
+	const User = isDbConnected() ? UserModel : memDb.User;
 	const users = await User.find({});
 	res.json(users);
 });
@@ -117,10 +123,15 @@ const getUsers = asyncHandler(async (req, res) => {
 // @route           DELETE /api/users/:id
 // @access          Private/Admin
 const deleteUser = asyncHandler(async (req, res) => {
+	const User = isDbConnected() ? UserModel : memDb.User;
 	const user = await User.findById(req.params.id);
 
 	if (user) {
-		await user.remove();
+		if (typeof user.remove === 'function') {
+			await user.remove();
+		} else if (typeof user.deleteOne === 'function') {
+			await user.deleteOne();
+		}
 		res.json({ message: 'User removed' });
 	} else {
 		res.status(404);
@@ -132,6 +143,7 @@ const deleteUser = asyncHandler(async (req, res) => {
 // @route           GET /api/users/:id
 // @access          Private/Admin
 const getUserById = asyncHandler(async (req, res) => {
+	const User = isDbConnected() ? UserModel : memDb.User;
 	const user = await User.findById(req.params.id).select('-password');
 
 	if (user) {
@@ -146,6 +158,7 @@ const getUserById = asyncHandler(async (req, res) => {
 // @route           PUT /api/users/:id
 // @access          Private/Admin
 const updateUser = asyncHandler(async (req, res) => {
+	const User = isDbConnected() ? UserModel : memDb.User;
 	const user = await User.findById(req.params.id);
 
 	if (user) {
@@ -165,7 +178,7 @@ const updateUser = asyncHandler(async (req, res) => {
 			isAdmin: updatedUser.isAdmin,
 		});
 	} else {
-		res.send(404);
+		res.status(404);
 		throw new Error('User not found');
 	}
 });
@@ -175,6 +188,7 @@ const updateUser = asyncHandler(async (req, res) => {
 // @access          Private
 const addFavoriteProduct = asyncHandler(async (req, res) => {
 	const { productId, name, image, price, numReviews, rating } = req.body;
+	const User = isDbConnected() ? UserModel : memDb.User;
 	const user = await User.findById(req.params.id);
 
 	if (user) {
@@ -187,6 +201,7 @@ const addFavoriteProduct = asyncHandler(async (req, res) => {
 			product: productId,
 		};
 
+		if (!user.favorites) user.favorites = [];
 		user.favorites.push(favorite);
 		await user.save();
 		res.status(201).json({
@@ -204,15 +219,12 @@ const addFavoriteProduct = asyncHandler(async (req, res) => {
 // @access          Private
 const removeFavoriteProduct = asyncHandler(async (req, res) => {
 	const productId = req.params.productId;
+	const User = isDbConnected() ? UserModel : memDb.User;
 	const user = await User.findById(req.params.id);
 
-	const isExists = user.favorites.some(
-		(x) => x.product.toString() == productId.toString()
-	);
-
-	if (isExists) {
+	if (user && user.favorites) {
 		user.favorites = user.favorites.filter(
-			(favorite) => favorite.product.toString() !== productId.toString()
+			(favorite) => (favorite.product?._id || favorite.product)?.toString() !== productId.toString()
 		);
 		await user.save();
 		res.status(202).json({
@@ -220,7 +232,7 @@ const removeFavoriteProduct = asyncHandler(async (req, res) => {
 		});
 	} else {
 		res.status(404);
-		throw new Error('Product not found');
+		throw new Error('User not found');
 	}
 });
 
@@ -228,10 +240,11 @@ const removeFavoriteProduct = asyncHandler(async (req, res) => {
 // @route           GET /api/users/:id/favorites
 // @access          Private
 const getFavoriteProducts = asyncHandler(async (req, res) => {
+	const User = isDbConnected() ? UserModel : memDb.User;
 	const user = await User.findById(req.params.id);
 
 	if (user) {
-		res.status(200).json({ favorites: user.favorites });
+		res.status(200).json({ favorites: user.favorites || [] });
 	} else {
 		res.status(404);
 		throw new Error('User not found');

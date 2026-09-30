@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler';
-import Order from '../models/order-model.js';
+import OrderModel from '../models/order-model.js';
+import { isDbConnected, memDb } from '../config/in-memory-db.js';
 
 // @description     Create new order
 // @route           POST /api/orders
@@ -18,22 +19,36 @@ const addOrderItems = asyncHandler(async (req, res) => {
 	if (orderItems && orderItems.length === 0) {
 		res.status(400);
 		throw new Error('No order items');
-		return;
 	} else {
-		const order = new Order({
-			orderItems,
-			user: req.user._id,
-			shippingAddress,
-			paymentMethod,
-			itemsPRice,
-			taxPrice,
-			shippingPrice,
-			totalPrice,
-		});
+		if (isDbConnected()) {
+			const order = new OrderModel({
+				orderItems,
+				user: req.user._id,
+				shippingAddress,
+				paymentMethod,
+				itemsPRice,
+				taxPrice,
+				shippingPrice,
+				totalPrice,
+			});
 
-		const createdOrder = await order.save();
+			const createdOrder = await order.save();
+			res.status(201).json(createdOrder);
+		} else {
+			const order = memDb.Order.createInstance({
+				orderItems,
+				user: req.user._id,
+				shippingAddress,
+				paymentMethod,
+				itemsPRice,
+				taxPrice,
+				shippingPrice,
+				totalPrice,
+			});
 
-		res.status(201).json(createdOrder);
+			const createdOrder = await order.save();
+			res.status(201).json(createdOrder);
+		}
 	}
 });
 
@@ -41,6 +56,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
 // @route           GET /api/orders/:id
 // @access          Private
 const getOrderById = asyncHandler(async (req, res) => {
+	const Order = isDbConnected() ? OrderModel : memDb.Order;
 	const order = await Order.findById(req.params.id).populate(
 		'user',
 		'name email'
@@ -58,6 +74,7 @@ const getOrderById = asyncHandler(async (req, res) => {
 // @route           PUT /api/orders/:id/pay
 // @access          Private
 const updateOrderToPaid = asyncHandler(async (req, res) => {
+	const Order = isDbConnected() ? OrderModel : memDb.Order;
 	const order = await Order.findById(req.params.id);
 
 	if (order) {
@@ -83,6 +100,7 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
 // @route           PUT /api/orders/:id/deliver
 // @access          Private/Admin
 const updateOrderToDelivered = asyncHandler(async (req, res) => {
+	const Order = isDbConnected() ? OrderModel : memDb.Order;
 	const order = await Order.findById(req.params.id);
 
 	if (order) {
@@ -101,6 +119,7 @@ const updateOrderToDelivered = asyncHandler(async (req, res) => {
 // @route           PUT /api/orders/myorders
 // @access          Private
 const getMyOrders = asyncHandler(async (req, res) => {
+	const Order = isDbConnected() ? OrderModel : memDb.Order;
 	const orders = await Order.find({ user: req.user._id });
 	res.json(orders);
 });
@@ -109,6 +128,7 @@ const getMyOrders = asyncHandler(async (req, res) => {
 // @route           GET /api/orders/
 // @access          Private/Admin
 const getOrders = asyncHandler(async (req, res) => {
+	const Order = isDbConnected() ? OrderModel : memDb.Order;
 	const orders = await Order.find({}).populate('user', 'id name');
 	res.json(orders);
 });
