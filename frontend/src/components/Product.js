@@ -5,7 +5,14 @@ import Rating from './Rating';
 import { addToFavorites, removeFavorite } from '../actions/user-actions';
 import { addToCart } from '../actions/cart-actions';
 
-const Product = ({ product, isFavorite: isFavoriteProp, removeFromFavorites, onQuickView }) => {
+const Product = ({
+	product,
+	isFavorite: isFavoriteProp,
+	removeFromFavorites,
+	onQuickView,
+	isCompared,
+	onToggleCompare,
+}) => {
 	const dispatch = useDispatch();
 	const history = useHistory();
 
@@ -55,6 +62,14 @@ const Product = ({ product, isFavorite: isFavoriteProp, removeFromFavorites, onQ
 		}
 	};
 
+	const compareHandler = (e) => {
+		e.preventDefault();
+		e.stopPropagation();
+		if (onToggleCompare) {
+			onToggleCompare(product);
+		}
+	};
+
 	const hasDiscount = product.originalPrice && product.originalPrice > product.price;
 	const discountPercent =
 		product.discountPercent ||
@@ -100,6 +115,19 @@ const Product = ({ product, isFavorite: isFavoriteProp, removeFromFavorites, onQ
 						}}
 					/>
 				</Link>
+
+				{/* Compare Toggle Checkbox Badge */}
+				{onToggleCompare && (
+					<button
+						type='button'
+						onClick={compareHandler}
+						className={`product-compare-checkbox ${isCompared ? 'compared' : ''}`}
+						title={isCompared ? 'Remove from compare list' : 'Add to side-by-side compare'}
+					>
+						<i className={isCompared ? 'fas fa-check-square' : 'far fa-square'}></i>
+						<span>Compare</span>
+					</button>
+				)}
 
 				{/* Quick View Eye Button Overlay */}
 				{onQuickView && (

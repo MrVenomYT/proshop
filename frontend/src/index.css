@@ -351,6 +351,32 @@ a:hover {
 	color: #dc2626;
 }
 
+.product-compare-checkbox {
+	position: absolute;
+	bottom: 0.85rem;
+	left: 0.85rem;
+	background: rgba(255, 255, 255, 0.95);
+	border: 1px solid #e2e8f0;
+	border-radius: 6px;
+	padding: 2px 8px;
+	font-size: 0.72rem;
+	font-weight: 700;
+	color: #475569;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	transition: all 0.15s ease;
+	z-index: 2;
+}
+
+.product-compare-checkbox:hover,
+.product-compare-checkbox.compared {
+	background: #dc2626;
+	color: #ffffff;
+	border-color: #dc2626;
+}
+
 .product-body {
 	padding: 1.35rem 1.5rem 1.5rem 1.5rem;
 	display: flex;
