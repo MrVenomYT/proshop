@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Button, Badge } from 'react-bootstrap';
+import { Row, Col, Button } from 'react-bootstrap';
 import Product from '../components/Product';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
@@ -16,8 +16,9 @@ import ProductCompareModal from '../components/ProductCompareModal';
 import Meta from '../components/Meta';
 import { listProducts } from '../actions/product-actions';
 import { getFavorites } from '../actions/user-actions';
+import useCompareList from '../hooks/useCompareList';
 
-const HomeScreen = ({ match, history }) => {
+const HomeScreen = ({ match }) => {
 	const keyword = match.params.keyword;
 	const pageNumber = match.params.pageNumber || 1;
 
@@ -31,10 +32,10 @@ const HomeScreen = ({ match, history }) => {
 	const [hotOnly, setHotOnly] = useState(false);
 	const [minRating, setMinRating] = useState(0);
 
-	// Modal States
+	// Modal States & Persistent Compare Hook
 	const [quickViewProduct, setQuickViewProduct] = useState(null);
-	const [compareItems, setCompareItems] = useState([]);
 	const [showCompareModal, setShowCompareModal] = useState(false);
+	const { compareItems, toggleCompare, removeFromCompare, clearCompare, isCompared } = useCompareList();
 
 	const dispatch = useDispatch();
 
@@ -84,22 +85,6 @@ const HomeScreen = ({ match, history }) => {
 		setHotOnly(false);
 		setMinRating(0);
 		setActiveFilter('all');
-	};
-
-	// Toggle Compare Handler
-	const handleToggleCompare = (product) => {
-		setCompareItems((prev) => {
-			const exists = prev.some((item) => item._id === product._id);
-			if (exists) {
-				return prev.filter((item) => item._id !== product._id);
-			} else {
-				if (prev.length >= 4) {
-					alert('You can compare a maximum of 4 hardware products at once.');
-					return prev;
-				}
-				return [...prev, product];
-			}
-		});
 	};
 
 	// Advanced Multi-Criteria Filter Logic
@@ -299,19 +284,16 @@ const HomeScreen = ({ match, history }) => {
 					) : (
 						<>
 							<Row className='g-3'>
-								{filteredProducts.map((product) => {
-									const isCompared = compareItems.some((item) => item._id === product._id);
-									return (
-										<Col key={product._id} sm={12} md={6} lg={4} className='mb-4'>
-											<Product
-												product={product}
-												onQuickView={(prod) => setQuickViewProduct(prod)}
-												isCompared={isCompared}
-												onToggleCompare={handleToggleCompare}
-											/>
-										</Col>
-									);
-								})}
+								{filteredProducts.map((product) => (
+									<Col key={product._id} sm={12} md={6} lg={4} className='mb-4'>
+										<Product
+											product={product}
+											onQuickView={(prod) => setQuickViewProduct(prod)}
+											isCompared={isCompared(product._id)}
+											onToggleCompare={() => toggleCompare(product)}
+										/>
+									</Col>
+								))}
 							</Row>
 							<Paginate
 								pages={pages}
@@ -350,7 +332,7 @@ const HomeScreen = ({ match, history }) => {
 								/>
 								<button
 									type='button'
-									onClick={() => handleToggleCompare(prod)}
+									onClick={() => removeFromCompare(prod._id)}
 									style={{
 										position: 'absolute',
 										top: '-6px',
@@ -385,7 +367,7 @@ const HomeScreen = ({ match, history }) => {
 						</Button>
 						<button
 							type='button'
-							onClick={() => setCompareItems([])}
+							onClick={clearCompare}
 							className='btn btn-link text-white btn-sm p-0 ml-1'
 							title='Clear'
 						>
@@ -407,9 +389,9 @@ const HomeScreen = ({ match, history }) => {
 				compareItems={compareItems}
 				show={showCompareModal}
 				onClose={() => setShowCompareModal(false)}
-				onRemoveFromCompare={(id) => setCompareItems((prev) => prev.filter((p) => p._id !== id))}
+				onRemoveFromCompare={removeFromCompare}
 				onClearCompare={() => {
-					setCompareItems([]);
+					clearCompare();
 					setShowCompareModal(false);
 				}}
 			/>
