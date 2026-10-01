@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Route, Link, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
@@ -9,6 +9,20 @@ const Header = () => {
 	const dispatch = useDispatch();
 	const history = useHistory();
 	const [activeCategoryTab, setActiveCategoryTab] = useState('gadgets');
+
+	// Theme Toggle State
+	const [theme, setTheme] = useState(() => {
+		return localStorage.getItem('proshop_theme') || 'light';
+	});
+
+	useEffect(() => {
+		document.documentElement.setAttribute('data-theme', theme);
+		localStorage.setItem('proshop_theme', theme);
+	}, [theme]);
+
+	const toggleTheme = () => {
+		setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+	};
 
 	const userLogin = useSelector((state) => state.userLogin);
 	const { userInfo } = userLogin;
@@ -110,6 +124,17 @@ const Header = () => {
 							<Link to='/search/all' className='nav-link font-weight-bold text-dark px-2 mr-2' style={{ fontSize: '0.92rem' }}>
 								Catalog
 							</Link>
+
+							{/* Light / Dark Mode Toggle Button */}
+							<button
+								type='button'
+								onClick={toggleTheme}
+								className='mobistore-icon-btn ml-1'
+								title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
+								style={{ width: '42px', height: '42px' }}
+							>
+								<i className={theme === 'light' ? 'fas fa-moon text-dark' : 'fas fa-sun text-warning'} style={{ fontSize: '1.15rem' }}></i>
+							</button>
 
 							{userInfo && userInfo.isAdmin && (
 								<Link

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button } from 'react-bootstrap';
 import Product from '../components/Product';
 import Message from '../components/Message';
-import Loader from '../components/Loader';
+import ProductGridSkeleton from '../components/ProductSkeleton';
 import Paginate from '../components/Paginate';
 import ProductCarousel from '../components/ProductCarousel';
 import BentoCollections from '../components/BentoCollections';
@@ -265,7 +265,7 @@ const HomeScreen = ({ match }) => {
 				{/* Products Grid Column */}
 				<Col lg={9} md={8}>
 					{loading ? (
-						<Loader />
+						<ProductGridSkeleton count={6} />
 					) : error ? (
 						<Message variant='danger'>{error}</Message>
 					) : filteredProducts.length === 0 ? (

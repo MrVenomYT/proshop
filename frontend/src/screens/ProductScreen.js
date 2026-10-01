@@ -9,13 +9,14 @@ import {
 	Form,
 } from 'react-bootstrap';
 import Rating from '../components/Rating';
-import Loader from '../components/Loader';
 import Message from '../components/Message';
 import Meta from '../components/Meta';
 import PriceDropAlert from '../components/PriceDropAlert';
 import ProductFaqAccordion from '../components/ProductFaqAccordion';
 import ProductImageZoom from '../components/ProductImageZoom';
 import SocialShareButtons from '../components/SocialShareButtons';
+import ProductDetailSkeleton from '../components/ProductDetailSkeleton';
+import FrequentlyBoughtTogether from '../components/FrequentlyBoughtTogether';
 import {
 	listProductDetails,
 	createProductReview,
@@ -118,7 +119,7 @@ const ProductScreen = ({ history, match }) => {
 			</div>
 
 			{loading ? (
-				<Loader />
+				<ProductDetailSkeleton />
 			) : error ? (
 				<Message variant='danger'>{error}</Message>
 			) : !product || !product.name ? (
@@ -236,6 +237,9 @@ const ProductScreen = ({ history, match }) => {
 
 					{/* Price Drop Alert Notification Form */}
 					<PriceDropAlert product={product} userInfo={userInfo} />
+
+					{/* Frequently Bought Together Bundle Engine */}
+					<FrequentlyBoughtTogether currentProduct={product} />
 
 					{/* Collapsible FAQ Accordion Section */}
 					<ProductFaqAccordion />

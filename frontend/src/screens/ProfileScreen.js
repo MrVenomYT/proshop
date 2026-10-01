@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Form, Button, Row, Col, Card } from 'react-bootstrap';
+import { Table, Form, Button, Row, Col, Card, Badge } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
@@ -9,12 +9,47 @@ import { getUserDetails, updateUserProfile } from '../actions/user-actions';
 import { listMyOrders } from '../actions/order-actions';
 import { USER_UPDATE_PROFILE_RESET } from '../constants/user-constants';
 
-const ProfileScreen = ({ location, history }) => {
+const ProfileScreen = ({ history }) => {
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
 	const [message, setMessage] = useState(null);
+
+	// Active Tracked Price Drop Alerts State (persisted locally per user)
+	const [priceAlerts, setPriceAlerts] = useState(() => {
+		try {
+			const saved = localStorage.getItem('proshop_price_alerts');
+			return saved ? JSON.parse(saved) : [
+				{
+					id: '1',
+					productName: 'MacBook Pro 16 M3 Max',
+					targetPrice: 3199,
+					currentPrice: 3499,
+					productId: '2',
+					createdAt: '2026-09-28',
+				},
+				{
+					id: '2',
+					productName: 'Sony WH-1000XM5 Headphones',
+					targetPrice: 349,
+					currentPrice: 399,
+					productId: '3',
+					createdAt: '2026-09-30',
+				},
+			];
+		} catch {
+			return [];
+		}
+	});
+
+	useEffect(() => {
+		localStorage.setItem('proshop_price_alerts', JSON.stringify(priceAlerts));
+	}, [priceAlerts]);
+
+	const removePriceAlert = (id) => {
+		setPriceAlerts((prev) => prev.filter((item) => item.id !== id));
+	};
 
 	const dispatch = useDispatch();
 
@@ -60,26 +95,26 @@ const ProfileScreen = ({ location, history }) => {
 
 	return (
 		<>
-			<Meta title='User Account | ProShop' />
+			<Meta title='User Account & Price Alerts | ProShop' />
 
 			<h1 className='mb-4'>Account Dashboard</h1>
 
 			<Row>
 				{/* Profile Settings Card */}
 				<Col lg={4} md={5} className='mb-4'>
-					<Card className='p-4'>
+					<Card className='p-4 mb-4 border-0 shadow-sm' style={{ borderRadius: '20px' }}>
 						<div className='d-flex align-items-center mb-3'>
 							<div
 								style={{
 									width: '48px',
 									height: '48px',
 									borderRadius: '50%',
-									background: '#0f172a',
+									background: '#dc2626',
 									color: '#ffffff',
 									display: 'flex',
 									alignItems: 'center',
 									justifyContent: 'center',
-									fontWeight: '700',
+									fontWeight: '800',
 									fontSize: '1.2rem',
 									marginRight: '1rem',
 								}}
@@ -140,18 +175,82 @@ const ProfileScreen = ({ location, history }) => {
 								/>
 							</Form.Group>
 
-							<Button type='submit' className='btn-accent btn-block py-2'>
+							<Button type='submit' className='btn-accent btn-block py-2 font-weight-bold'>
 								Save Profile Changes
 							</Button>
 						</Form>
 					</Card>
 				</Col>
 
-				{/* Order History Table */}
 				<Col lg={8} md={7}>
-					<Card className='p-4'>
+					{/* Tracked Price Drop Alerts Card */}
+					<Card className='p-4 mb-4 border-0 shadow-sm' style={{ borderRadius: '20px' }}>
 						<div className='d-flex align-items-center justify-content-between mb-3'>
-							<h2 className='mb-0' style={{ fontSize: '1.35rem' }}>Order History</h2>
+							<div className='d-flex align-items-center gap-2'>
+								<i className='fas fa-bell text-danger mr-1'></i>
+								<h2 className='mb-0' style={{ fontSize: '1.25rem' }}>Tracked Price Drop Alerts</h2>
+							</div>
+							<Badge bg='danger' className='p-2 px-3' style={{ borderRadius: '9999px', fontSize: '0.75rem' }}>
+								{priceAlerts.length} Active Alert{priceAlerts.length !== 1 ? 's' : ''}
+							</Badge>
+						</div>
+
+						{priceAlerts.length === 0 ? (
+							<div className='p-4 text-center text-muted bg-light rounded-16'>
+								<i className='fas fa-bell-slash fa-2x mb-2 opacity-50 d-block'></i>
+								<span style={{ fontSize: '0.9rem' }}>No active price drop alerts set. Visit any product page to enable price tracking!</span>
+							</div>
+						) : (
+							<div className='table-responsive'>
+								<Table hover className='mb-0 align-middle'>
+									<thead>
+										<tr>
+											<th>PRODUCT</th>
+											<th>TARGET PRICE</th>
+											<th>CURRENT PRICE</th>
+											<th>DATE SET</th>
+											<th className='text-right'>ACTION</th>
+										</tr>
+									</thead>
+									<tbody>
+										{priceAlerts.map((alert) => (
+											<tr key={alert.id}>
+												<td className='font-weight-bold text-dark' style={{ fontSize: '0.88rem' }}>
+													{alert.productName}
+												</td>
+												<td className='font-weight-bold text-danger' style={{ fontVariantNumeric: 'tabular-nums' }}>
+													${Number(alert.targetPrice).toFixed(2)}
+												</td>
+												<td className='text-muted' style={{ fontVariantNumeric: 'tabular-nums' }}>
+													${Number(alert.currentPrice).toFixed(2)}
+												</td>
+												<td className='text-muted' style={{ fontSize: '0.8rem' }}>
+													{alert.createdAt}
+												</td>
+												<td className='text-right'>
+													<Button
+														type='button'
+														variant='light'
+														onClick={() => removePriceAlert(alert.id)}
+														className='btn-sm text-danger font-weight-bold border'
+														style={{ borderRadius: '8px', padding: '0.25rem 0.65rem' }}
+														title='Delete alert'
+													>
+														<i className='fas fa-trash-alt mr-1'></i> Remove
+													</Button>
+												</td>
+											</tr>
+										))}
+									</tbody>
+								</Table>
+							</div>
+						)}
+					</Card>
+
+					{/* Order History Table */}
+					<Card className='p-4 border-0 shadow-sm' style={{ borderRadius: '20px' }}>
+						<div className='d-flex align-items-center justify-content-between mb-3'>
+							<h2 className='mb-0' style={{ fontSize: '1.25rem' }}>Order History</h2>
 							<span className='text-muted' style={{ fontSize: '0.85rem' }}>
 								{orders ? `${orders.length} order${orders.length !== 1 ? 's' : ''}` : ''}
 							</span>
@@ -162,14 +261,14 @@ const ProfileScreen = ({ location, history }) => {
 						) : errorOrders ? (
 							<Message variant='danger'>{errorOrders}</Message>
 						) : orders && orders.length === 0 ? (
-							<div className='p-4 text-center text-muted bg-light rounded'>
-								<i className='fas fa-box-open fa-3x mb-3 opacity-50'></i>
+							<div className='p-4 text-center text-muted bg-light rounded-16'>
+								<i className='fas fa-box-open fa-2x mb-2 opacity-50 d-block'></i>
 								<h4>No Orders Placed Yet</h4>
 								<p className='mb-0'>When you place an order, tracking and invoice details will appear here.</p>
 							</div>
 						) : (
 							<div className='table-responsive'>
-								<Table hover className='mb-0'>
+								<Table hover className='mb-0 align-middle'>
 									<thead>
 										<tr>
 											<th>ORDER ID</th>
