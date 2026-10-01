@@ -43,7 +43,7 @@ const Header = () => {
 
 	return (
 		<header className='sticky-top shadow-sm bg-white'>
-			{/* Main Navbar (TechVerse SS 1 Style) */}
+			{/* Main Navbar (ProShop Style) */}
 			<Navbar expand='lg' className='py-2 border-bottom bg-white'>
 				<Container>
 					{/* Brand Logo Lockup */}
@@ -68,7 +68,7 @@ const Header = () => {
 						</div>
 						<div>
 							<div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.45rem', fontWeight: '800', lineHeight: '1', color: '#0f172a', letterSpacing: '-0.03em' }}>
-								Tech<span style={{ color: '#dc2626' }}>Verse</span>
+								Pro<span style={{ color: '#dc2626' }}>Shop</span>
 							</div>
 							<div className='text-muted' style={{ fontSize: '0.65rem', fontWeight: '600', letterSpacing: '0.04em' }}>
 								Discover. Shop. Upgrade.
@@ -76,9 +76,9 @@ const Header = () => {
 						</div>
 					</Link>
 
-					<Navbar.Toggle aria-controls='techverse-navbar-nav' />
+					<Navbar.Toggle aria-controls='proshop-navbar-nav' />
 
-					<Navbar.Collapse id='techverse-navbar-nav'>
+					<Navbar.Collapse id='proshop-navbar-nav'>
 						{/* Search Bar */}
 						<div className='mx-auto my-2 my-lg-0 w-100 d-flex justify-content-center' style={{ maxWidth: '420px' }}>
 							<Route render={({ history: routeHistory }) => <SearchBox history={routeHistory} />} />
@@ -128,7 +128,7 @@ const Header = () => {
 											<i className='fas fa-user-circle' style={{ color: '#dc2626' }}></i>
 										</div>
 									}
-									id='techverse-user-dropdown'
+									id='proshop-user-dropdown'
 									alignRight
 								>
 									<NavDropdown.Item onClick={() => history.push('/profile')}>
@@ -174,7 +174,7 @@ const Header = () => {
 				</Container>
 			</Navbar>
 
-			{/* Sub-Header Category Tabs Bar with Crimson Red Active Line (TechVerse SS 1 Style) */}
+			{/* Sub-Header Category Tabs Bar with Crimson Red Active Line */}
 			<div className='border-bottom bg-white overflow-auto' style={{ scrollbarWidth: 'none' }}>
 				<Container className='d-flex align-items-center gap-2 py-1'>
 					{categoryTabs.map((tab) => (

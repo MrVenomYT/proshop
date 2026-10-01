@@ -48,41 +48,37 @@ const ProductCarousel = () => {
 			onMouseEnter={() => setIsPaused(true)}
 			onMouseLeave={() => setIsPaused(false)}
 			style={{
-				background: 'linear-gradient(135deg, #090e1a 0%, #0f172a 50%, #1e1b4b 100%)',
-				border: '1px solid rgba(255, 255, 255, 0.12)',
+				background: 'radial-gradient(circle at 85% 50%, rgba(220, 38, 38, 0.08) 0%, #ffffff 65%)',
+				border: '1px solid #e2e8f0',
 				borderRadius: '24px',
 				overflow: 'hidden',
-				boxShadow: '0 20px 40px rgba(0, 0, 0, 0.25)',
+				boxShadow: '0 8px 30px rgba(0, 0, 0, 0.04)',
 			}}
 		>
 			<div className='p-4 p-md-5'>
 				<Row className='align-items-center g-4'>
-					{/* Left Column: Text Info */}
+					{/* Left Column: TechVerse / ProShop Style Headline & CTAs */}
 					<Col lg={7} md={6}>
-						<div className='d-flex align-items-center gap-2 mb-3 flex-wrap'>
+						<div className='d-flex align-items-center gap-2 mb-2 flex-wrap'>
 							<span
 								style={{
-									background: 'rgba(99, 102, 241, 0.2)',
-									border: '1px solid rgba(99, 102, 241, 0.4)',
-									color: '#818cf8',
-									padding: '4px 12px',
-									borderRadius: '9999px',
-									fontSize: '0.75rem',
+									color: '#dc2626',
+									fontSize: '0.85rem',
 									fontWeight: '800',
-									letterSpacing: '0.08em',
+									letterSpacing: '0.06em',
 									textTransform: 'uppercase',
 								}}
 							>
-								NEXT-GEN FLAGSHIP
+								Discover. Shop. Upgrade.
 							</span>
 							{discountPercent > 0 && (
 								<span
 									style={{
-										background: '#ef4444',
+										background: '#dc2626',
 										color: '#ffffff',
-										padding: '4px 10px',
+										padding: '3px 10px',
 										borderRadius: '9999px',
-										fontSize: '0.75rem',
+										fontSize: '0.72rem',
 										fontWeight: '800',
 									}}
 								>
@@ -94,86 +90,91 @@ const ProductCarousel = () => {
 						<h1
 							className='hero-title mb-2'
 							style={{
-								fontSize: '2.4rem',
-								fontWeight: '800',
-								color: '#ffffff',
-								lineHeight: '1.2',
+								fontSize: '2.6rem',
+								fontWeight: '900',
+								color: '#0f172a',
+								lineHeight: '1.15',
 								letterSpacing: '-0.03em',
 							}}
 						>
-							Smarter Devices.<br />
-							<span style={{ color: '#38bdf8' }}>Brighter Days.</span>
+							Latest Tech &<br />
+							<span style={{ color: '#dc2626' }}>Gadget Hardware</span>
 						</h1>
 
-						<h3 className='text-white font-weight-bold mb-2' style={{ fontSize: '1.25rem' }}>
+						<h3 className='text-dark font-weight-bold mb-2' style={{ fontSize: '1.2rem', color: '#1e293b' }}>
 							{currentProduct.name}
 						</h3>
 
-						<p className='text-slate-300 mb-3' style={{ fontSize: '0.92rem', color: '#94a3b8', lineHeight: '1.6', maxWidth: '520px' }}>
+						<p className='text-muted mb-3' style={{ fontSize: '0.92rem', color: '#64748b', lineHeight: '1.6', maxWidth: '520px' }}>
 							{currentProduct.description}
 						</p>
 
 						<div className='d-flex align-items-center mb-3'>
-							<Rating value={currentProduct.rating} text={`${currentProduct.numReviews} verified ratings`} />
+							<Rating value={currentProduct.rating} text={`${currentProduct.numReviews} verified reviews`} />
 						</div>
 
-						{/* Pricing & CTA */}
+						{/* Pricing & Dual Action Buttons */}
 						<div className='d-flex flex-wrap align-items-center gap-3 mb-4'>
 							<div className='d-flex align-items-baseline mr-3'>
-								<span style={{ fontSize: '2.2rem', fontWeight: '800', color: '#ffffff', fontFamily: 'var(--font-heading)' }}>
+								<span style={{ fontSize: '2.1rem', fontWeight: '800', color: '#0f172a', fontFamily: 'var(--font-heading)' }}>
 									${Number(currentProduct.price).toFixed(2)}
 								</span>
 								{hasDiscount && (
-									<span style={{ fontSize: '1.2rem', color: '#64748b', textDecoration: 'line-through', marginLeft: '10px' }}>
+									<span style={{ fontSize: '1.1rem', color: '#94a3b8', textDecoration: 'line-through', marginLeft: '10px' }}>
 										${Number(currentProduct.originalPrice).toFixed(2)}
 									</span>
 								)}
 							</div>
 
-							<Link to={`/product/${currentProduct._id}`} className='btn btn-accent px-4 py-3 font-weight-bold'>
-								Shop Flagship <i className='fas fa-arrow-right ml-2'></i>
+							<Link
+								to={`/product/${currentProduct._id}`}
+								className='btn font-weight-bold px-4 py-3'
+								style={{
+									background: '#dc2626',
+									color: '#ffffff',
+									borderRadius: '12px',
+									boxShadow: '0 8px 18px rgba(220, 38, 38, 0.3)',
+								}}
+							>
+								Shop Now <i className='fas fa-arrow-right ml-2'></i>
 							</Link>
-							<Link to='/search/sale' className='btn btn-outline-light px-4 py-3 font-weight-bold'>
-								Explore Deals
+							<Link
+								to='/search/sale'
+								className='btn btn-light font-weight-bold px-4 py-3 border'
+								style={{ borderRadius: '12px' }}
+							>
+								Browse Collection
 							</Link>
 						</div>
 
-						{/* 3 Pillar Sub-Badges */}
-						<div className='d-flex flex-wrap align-items-center gap-4 pt-3' style={{ fontSize: '0.8rem', color: '#cbd5e1' }}>
-							<div className='d-flex align-items-center mr-3 mb-2 mb-md-0'>
-								<i className='fas fa-bolt text-warning mr-2'></i> Innovative Technology
-							</div>
-							<div className='d-flex align-items-center mr-3 mb-2 mb-md-0'>
-								<i className='fas fa-check-circle text-success mr-2'></i> Official Warranty
-							</div>
-							<div className='d-flex align-items-center mb-2 mb-md-0'>
-								<i className='fas fa-truck text-primary mr-2'></i> Express Delivery
-							</div>
+						{/* Region Flags & Delivery Pill */}
+						<div className='d-flex flex-wrap align-items-center gap-3 pt-3 border-top' style={{ borderColor: '#f1f5f9', fontSize: '0.8rem', color: '#64748b', fontWeight: '600' }}>
+							<span className='mr-2'>🇺🇸 US &nbsp; 🇬🇧 UK &nbsp; 🇦🇪 UAE</span>
+							<span className='text-muted'>|</span>
+							<span><i className='fas fa-truck text-danger mr-1.5'></i> Fast Express Shipping Worldwide</span>
 						</div>
 					</Col>
 
-					{/* Right Column: Clean Responsive Real Product Photo Card */}
+					{/* Right Column: High-Res Real Product Showcase */}
 					<Col lg={5} md={6}>
 						<div
-							className='p-4 rounded-24 d-flex align-items-center justify-content-center position-relative'
+							className='p-4 d-flex align-items-center justify-content-center position-relative'
 							style={{
-								background: 'radial-gradient(circle at center, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%)',
-								border: '1px solid rgba(255, 255, 255, 0.12)',
+								background: 'radial-gradient(circle, rgba(220, 38, 38, 0.12) 0%, rgba(248, 250, 252, 0.5) 70%)',
 								borderRadius: '20px',
-								minHeight: '300px',
-								maxHeight: '380px',
-								boxShadow: '0 12px 30px rgba(0,0,0,0.3)',
+								minHeight: '320px',
+								border: '1px solid #f1f5f9',
 							}}
 						>
 							<img
 								src={currentProduct.image}
 								alt={currentProduct.name}
 								style={{
-									maxHeight: '320px',
+									maxHeight: '300px',
 									maxWidth: '100%',
-									objectFit: 'cover',
+									objectFit: 'contain',
 									borderRadius: '16px',
-									boxShadow: '0 12px 24px rgba(0,0,0,0.4)',
+									filter: 'drop-shadow(0 14px 24px rgba(0, 0, 0, 0.12))',
 									transition: 'transform 0.4s ease',
 								}}
 								onError={(e) => {
@@ -186,14 +187,24 @@ const ProductCarousel = () => {
 				</Row>
 			</div>
 
-			{/* Slide Navigation Controls Bar (Fixed Button Styling) */}
-			<div className='px-4 py-3 d-flex align-items-center justify-content-between border-top' style={{ borderColor: 'rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.3)' }}>
+			{/* Slide Navigation Controls Bar */}
+			<div className='px-4 py-3 d-flex align-items-center justify-content-between border-top bg-light' style={{ borderColor: '#f1f5f9' }}>
 				<div className='d-flex align-items-center gap-2'>
 					{products.map((item, idx) => (
 						<button
 							key={item._id}
 							type='button'
 							className={`hero-dot ${idx === currentIndex ? 'active' : ''}`}
+							style={{
+								width: idx === currentIndex ? '24px' : '10px',
+								height: '8px',
+								borderRadius: '9999px',
+								background: idx === currentIndex ? '#dc2626' : '#cbd5e1',
+								border: 'none',
+								padding: 0,
+								cursor: 'pointer',
+								transition: 'all 0.2s ease',
+							}}
 							onClick={() => setCurrentIndex(idx)}
 							aria-label={`Go to slide ${idx + 1}`}
 						/>
@@ -207,17 +218,17 @@ const ProductCarousel = () => {
 							setCurrentIndex((prev) => (prev - 1 + products.length) % products.length)
 						}
 						style={{
-							width: '38px',
-							height: '38px',
+							width: '36px',
+							height: '36px',
 							borderRadius: '50%',
-							background: 'rgba(255, 255, 255, 0.12)',
-							border: '1px solid rgba(255, 255, 255, 0.25)',
-							color: '#ffffff',
+							background: '#ffffff',
+							border: '1px solid #cbd5e1',
+							color: '#0f172a',
 							display: 'flex',
 							alignItems: 'center',
 							justifyContent: 'center',
 							cursor: 'pointer',
-							fontSize: '0.9rem',
+							fontSize: '0.85rem',
 						}}
 					>
 						<i className='fas fa-chevron-left'></i>
@@ -226,17 +237,17 @@ const ProductCarousel = () => {
 						type='button'
 						onClick={() => setCurrentIndex((prev) => (prev + 1) % products.length)}
 						style={{
-							width: '38px',
-							height: '38px',
+							width: '36px',
+							height: '36px',
 							borderRadius: '50%',
-							background: 'rgba(255, 255, 255, 0.12)',
-							border: '1px solid rgba(255, 255, 255, 0.25)',
-							color: '#ffffff',
+							background: '#ffffff',
+							border: '1px solid #cbd5e1',
+							color: '#0f172a',
 							display: 'flex',
 							alignItems: 'center',
 							justifyContent: 'center',
 							cursor: 'pointer',
-							fontSize: '0.9rem',
+							fontSize: '0.85rem',
 						}}
 					>
 						<i className='fas fa-chevron-right'></i>
