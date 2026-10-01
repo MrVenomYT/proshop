@@ -1,23 +1,40 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Footer = () => {
 	const [email, setEmail] = useState('');
-	const [subscribed, setSubscribed] = useState(false);
+	const [subscribedMsg, setSubscribedMsg] = useState('');
+	const [loading, setLoading] = useState(false);
+	const [errorMsg, setErrorMsg] = useState('');
 
-	const handleSubscribe = (e) => {
+	const handleSubscribe = async (e) => {
 		e.preventDefault();
-		if (email) {
-			setSubscribed(true);
-			setEmail('');
+		if (!email || !email.includes('@')) {
+			setErrorMsg('Please enter a valid email address.');
+			return;
+		}
+
+		try {
+			setLoading(true);
+			setErrorMsg('');
+			const { data } = await axios.post('/api/newsletter/subscribe', { email });
+			if (data.success) {
+				setSubscribedMsg(data.message || 'Successfully subscribed!');
+				setEmail('');
+			}
+		} catch (err) {
+			setErrorMsg(err.response?.data?.message || 'Subscription failed. Please try again.');
+		} finally {
+			setLoading(false);
 		}
 	};
 
 	return (
 		<footer>
 			<Container>
-				{/* 1. Four Pillar Trust Guarantee Bar (from Voltix, TechVerse & TechNova) */}
+				{/* 1. Four Pillar Trust Guarantee Bar */}
 				<Row className='py-4 mb-5 border-bottom border-slate-800 g-3 text-white' style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
 					<Col md={3} sm={6} className='d-flex align-items-center gap-3 mb-3 mb-md-0'>
 						<div
@@ -25,8 +42,8 @@ const Footer = () => {
 								width: '44px',
 								height: '44px',
 								borderRadius: '50%',
-								background: 'rgba(59, 130, 246, 0.15)',
-								color: '#60a5fa',
+								background: 'rgba(220, 38, 38, 0.15)',
+								color: '#ef4444',
 								display: 'flex',
 								alignItems: 'center',
 								justifyContent: 'center',
@@ -94,8 +111,8 @@ const Footer = () => {
 								width: '44px',
 								height: '44px',
 								borderRadius: '50%',
-								background: 'rgba(239, 68, 68, 0.15)',
-								color: '#f87171',
+								background: 'rgba(59, 130, 246, 0.15)',
+								color: '#60a5fa',
 								display: 'flex',
 								alignItems: 'center',
 								justifyContent: 'center',
@@ -112,7 +129,7 @@ const Footer = () => {
 					</Col>
 				</Row>
 
-				{/* 2. Newsletter Subscription Card (from Voltix & TechNova) */}
+				{/* 2. Newsletter Subscription Card with Mailing API Integration */}
 				<div
 					className='p-4 p-md-5 mb-5 rounded-20 text-white'
 					style={{
@@ -124,39 +141,47 @@ const Footer = () => {
 					<Row className='align-items-center'>
 						<Col lg={6} className='mb-3 mb-lg-0'>
 							<div className='d-flex align-items-center gap-3'>
-								<i className='fas fa-paper-plane fa-2x text-primary mr-3'></i>
+								<i className='fas fa-paper-plane fa-2x text-danger mr-3'></i>
 								<div>
 									<h3 className='text-white mb-1' style={{ fontSize: '1.35rem' }}>Join the ProShop Tech Community</h3>
 									<p className='text-slate-400 mb-0' style={{ fontSize: '0.85rem', color: '#94a3b8' }}>
-										Get exclusive drops, early flash deal invites, and hardware setup guides delivered to your inbox.
+										Get exclusive hardware drops, early flash deal invites, and setup guides delivered to your inbox.
 									</p>
 								</div>
 							</div>
 						</Col>
 
 						<Col lg={6}>
-							{subscribed ? (
-								<div className='p-3 bg-emerald-950 text-emerald-300 rounded font-weight-bold text-center' style={{ background: '#064e3b', color: '#6ee7b7' }}>
-									<i className='fas fa-check-circle mr-2'></i> Welcome! You are now subscribed to ProShop.
+							{subscribedMsg ? (
+								<div className='p-3 rounded font-weight-bold text-center' style={{ background: '#064e3b', color: '#6ee7b7', borderRadius: '12px' }}>
+									<i className='fas fa-check-circle mr-2'></i> {subscribedMsg}
 								</div>
 							) : (
-								<Form onSubmit={handleSubscribe} className='d-flex gap-2'>
-									<Form.Control
-										type='email'
-										placeholder='Enter your email address...'
-										value={email}
-										onChange={(e) => setEmail(e.target.value)}
-										required
-										style={{
-											background: '#090e1a',
-											borderColor: 'rgba(255,255,255,0.15)',
-											color: '#ffffff',
-											borderRadius: '10px',
-										}}
-									/>
-									<Button type='submit' className='btn-accent font-weight-bold px-4' style={{ borderRadius: '10px', whiteSpace: 'nowrap' }}>
-										Subscribe
-									</Button>
+								<Form onSubmit={handleSubscribe}>
+									<div className='d-flex gap-2'>
+										<Form.Control
+											type='email'
+											placeholder='Enter your email address...'
+											value={email}
+											onChange={(e) => setEmail(e.target.value)}
+											required
+											style={{
+												background: '#090e1a',
+												borderColor: 'rgba(255,255,255,0.15)',
+												color: '#ffffff',
+												borderRadius: '10px',
+											}}
+										/>
+										<Button
+											type='submit'
+											disabled={loading}
+											className='btn-accent font-weight-bold px-4'
+											style={{ borderRadius: '10px', whiteSpace: 'nowrap', background: '#dc2626', borderColor: '#dc2626' }}
+										>
+											{loading ? 'Subscribing...' : 'Subscribe'}
+										</Button>
+									</div>
+									{errorMsg && <div className='text-danger mt-2' style={{ fontSize: '0.8rem' }}>{errorMsg}</div>}
 								</Form>
 							)}
 						</Col>
@@ -168,8 +193,8 @@ const Footer = () => {
 					{/* Brand Column */}
 					<Col lg={4} md={6} className='mb-4 mb-lg-0'>
 						<div className='footer-brand d-flex align-items-center mb-2'>
-							<i className='fas fa-cube text-primary mr-2'></i>
-							<span>PRO<span style={{ color: '#60a5fa' }}>SHOP</span></span>
+							<i className='fas fa-cube text-danger mr-2'></i>
+							<span>PRO<span style={{ color: '#dc2626' }}>SHOP</span></span>
 						</div>
 						<p className='text-muted' style={{ fontSize: '0.875rem', maxWidth: '320px', lineHeight: '1.6' }}>
 							Premium electronics, high-fidelity acoustics, and hardware essentials built for creator workflows.
@@ -205,7 +230,7 @@ const Footer = () => {
 						</div>
 					</Col>
 
-					{/* App Download & Payment Methods (from Voltix & TechNova) */}
+					{/* Payment Methods */}
 					<Col lg={3} md={6}>
 						<h3 style={{ fontSize: '0.9rem', color: '#ffffff', letterSpacing: '0.05em' }}>PAYMENT METHODS</h3>
 						<p className='text-muted' style={{ fontSize: '0.85rem' }}>

@@ -35,6 +35,21 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/fulfillment', fulfillmentRoutes);
 
+// Newsletter Subscriber API
+const subscribersList = new Set();
+app.post('/api/newsletter/subscribe', (req, res) => {
+	const { email } = req.body;
+	if (!email || !email.includes('@')) {
+		return res.status(400).json({ success: false, message: 'Please provide a valid email address.' });
+	}
+	subscribersList.add(email.toLowerCase().trim());
+	res.json({
+		success: true,
+		message: 'Thank you for subscribing! Check your inbox for exclusive ProShop hardware drops.',
+		subscriberCount: subscribersList.size,
+	});
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
 	res.json({

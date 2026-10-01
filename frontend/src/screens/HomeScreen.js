@@ -9,23 +9,32 @@ import Paginate from '../components/Paginate';
 import ProductCarousel from '../components/ProductCarousel';
 import BentoCollections from '../components/BentoCollections';
 import BrandLogosRow from '../components/BrandLogosRow';
+import QuickViewModal from '../components/QuickViewModal';
 import Meta from '../components/Meta';
 import { listProducts } from '../actions/product-actions';
+import { getFavorites } from '../actions/user-actions';
 
 const HomeScreen = ({ match, history }) => {
 	const keyword = match.params.keyword;
 	const pageNumber = match.params.pageNumber || 1;
 	const [activeFilter, setActiveFilter] = useState('all');
 	const [sortBy, setSortBy] = useState('featured');
+	const [quickViewProduct, setQuickViewProduct] = useState(null);
 
 	const dispatch = useDispatch();
+
+	const userLogin = useSelector((state) => state.userLogin);
+	const { userInfo } = userLogin;
 
 	const productList = useSelector((state) => state.productList);
 	const { loading, error, products, page, pages } = productList;
 
 	useEffect(() => {
 		dispatch(listProducts(keyword, pageNumber));
-	}, [dispatch, keyword, pageNumber]);
+		if (userInfo && userInfo._id) {
+			dispatch(getFavorites(userInfo._id));
+		}
+	}, [dispatch, keyword, pageNumber, userInfo]);
 
 	const departmentFilters = [
 		{ id: 'all', label: 'All Catalog' },
@@ -79,13 +88,13 @@ const HomeScreen = ({ match, history }) => {
 
 			{!keyword ? (
 				<>
-					{/* 1. Flagship Hero Showcase (from Voltix, TechNova & 19.76) */}
+					{/* 1. Flagship Hero Showcase */}
 					<ProductCarousel />
 
-					{/* 2. Shop by Brand Row (from TechNova) */}
+					{/* 2. Shop by Brand Row */}
 					<BrandLogosRow />
 
-					{/* 3. Featured Bento Collections & Category Icons (from Voltix, TechVerse & 19.76) */}
+					{/* 3. Featured Bento Collections & Category Icons */}
 					<BentoCollections />
 				</>
 			) : (
@@ -99,7 +108,7 @@ const HomeScreen = ({ match, history }) => {
 				</div>
 			)}
 
-			{/* 4. Main Catalog Header & Filter Bar (from TechNova & Voltix) */}
+			{/* 4. Main Catalog Header & Filter Bar */}
 			<div className='d-flex flex-column flex-lg-row align-items-lg-center justify-content-between mb-3 gap-3'>
 				<div>
 					<h2 className='mb-1' style={{ fontSize: '1.6rem' }}>
@@ -128,7 +137,7 @@ const HomeScreen = ({ match, history }) => {
 				</div>
 			</div>
 
-			{/* Department Filter Pills (from TechVerse) */}
+			{/* Department Filter Pills */}
 			{!keyword && (
 				<div className='category-filter-bar mb-4'>
 					{departmentFilters.map((dept) => (
@@ -167,7 +176,7 @@ const HomeScreen = ({ match, history }) => {
 					<Row className='g-3'>
 						{filteredProducts.map((product) => (
 							<Col key={product._id} sm={12} md={6} lg={4} xl={3} className='mb-4'>
-								<Product product={product} />
+								<Product product={product} onQuickView={(prod) => setQuickViewProduct(prod)} />
 							</Col>
 						))}
 					</Row>
@@ -178,6 +187,13 @@ const HomeScreen = ({ match, history }) => {
 					/>
 				</>
 			)}
+
+			{/* Quick View Modal */}
+			<QuickViewModal
+				product={quickViewProduct}
+				show={!!quickViewProduct}
+				onClose={() => setQuickViewProduct(null)}
+			/>
 		</>
 	);
 };

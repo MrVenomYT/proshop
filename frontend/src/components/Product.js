@@ -5,7 +5,7 @@ import Rating from './Rating';
 import { addToFavorites, removeFavorite } from '../actions/user-actions';
 import { addToCart } from '../actions/cart-actions';
 
-const Product = ({ product, isFavorite: isFavoriteProp, removeFromFavorites }) => {
+const Product = ({ product, isFavorite: isFavoriteProp, removeFromFavorites, onQuickView }) => {
 	const dispatch = useDispatch();
 	const history = useHistory();
 
@@ -44,6 +44,14 @@ const Product = ({ product, isFavorite: isFavoriteProp, removeFromFavorites }) =
 		if (product.countInStock > 0) {
 			dispatch(addToCart(productId, 1));
 			history.push('/cart');
+		}
+	};
+
+	const quickViewHandler = (e) => {
+		e.preventDefault();
+		e.stopPropagation();
+		if (onQuickView) {
+			onQuickView(product);
 		}
 	};
 
@@ -93,11 +101,25 @@ const Product = ({ product, isFavorite: isFavoriteProp, removeFromFavorites }) =
 					/>
 				</Link>
 
+				{/* Quick View Eye Button Overlay */}
+				{onQuickView && (
+					<button
+						type='button'
+						onClick={quickViewHandler}
+						className='product-quickview-btn'
+						title='Quick View Details'
+						aria-label='Quick View'
+					>
+						<i className='fas fa-eye'></i> Quick View
+					</button>
+				)}
+
+				{/* Wishlist Heart Button */}
 				<button
 					type='button'
 					onClick={toggleFavoriteHandler}
 					className={`product-favorite-btn ${isFavorited ? 'favorited' : ''}`}
-					title={isFavorited ? 'Remove from favorites' : 'Save to wishlist'}
+					title={isFavorited ? 'Remove from Wishlist' : 'Save to Wishlist'}
 					aria-label='Toggle favorite'
 				>
 					<i className={isFavorited ? 'fas fa-heart' : 'far fa-heart'}></i>
@@ -105,7 +127,7 @@ const Product = ({ product, isFavorite: isFavoriteProp, removeFromFavorites }) =
 			</div>
 
 			<div className='product-body'>
-				{/* Clean unboxed metadata with typographic separators */}
+				{/* Category & Brand Metadata */}
 				<div className='d-flex align-items-center gap-1 mb-1 text-muted' style={{ fontSize: '0.75rem', fontWeight: '600' }}>
 					<span style={{ color: 'var(--color-text-main)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
 						{product.brand || 'Hardware'}

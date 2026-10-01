@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Row, Col, Card } from 'react-bootstrap';
@@ -6,10 +6,12 @@ import Product from '../components/Product';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import Meta from '../components/Meta';
+import QuickViewModal from '../components/QuickViewModal';
 import { getFavorites, removeFavorite } from '../actions/user-actions';
 
 const FavoritesScreen = ({ history }) => {
 	const dispatch = useDispatch();
+	const [quickViewProduct, setQuickViewProduct] = useState(null);
 
 	const userLogin = useSelector((state) => state.userLogin);
 	const { userInfo } = userLogin;
@@ -68,7 +70,7 @@ const FavoritesScreen = ({ history }) => {
 						Click the heart icon on any hardware card to bookmark items and track special promotions.
 					</p>
 					<div>
-						<Link to='/' className='btn btn-primary px-4 py-2 mt-2 font-weight-bold'>
+						<Link to='/' className='btn btn-accent px-4 py-2 mt-2 font-weight-bold'>
 							Discover Flagship Gear
 						</Link>
 					</div>
@@ -84,10 +86,17 @@ const FavoritesScreen = ({ history }) => {
 									product={product}
 									isFavorite={true}
 									removeFromFavorites={removeFromFavoritesHandler}
+									onQuickView={(prod) => setQuickViewProduct(prod)}
 								/>
 							</Col>
 						))}
 					</Row>
+
+					<QuickViewModal
+						product={quickViewProduct}
+						show={!!quickViewProduct}
+						onClose={() => setQuickViewProduct(null)}
+					/>
 				</>
 			)}
 		</>

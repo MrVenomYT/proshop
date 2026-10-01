@@ -7,8 +7,8 @@
 	--color-text-main: #0f172a;
 	--color-text-muted: #64748b;
 	--color-text-subtle: #94a3b8;
-	--color-accent: #4f46e5;
-	--color-accent-hover: #4338ca;
+	--color-accent: #dc2626;
+	--color-accent-hover: #b91c1c;
 	--color-gold: #f59e0b;
 	--color-border: #e2e8f0;
 	--color-success: #10b981;
@@ -93,7 +93,7 @@ a:hover {
 
 .mobistore-nav-link:hover,
 .mobistore-nav-link.active {
-	color: #4f46e5 !important;
+	color: #dc2626 !important;
 }
 
 .mobistore-nav-link.active::after {
@@ -104,7 +104,7 @@ a:hover {
 	transform: translateX(-50%);
 	width: 20px;
 	height: 3px;
-	background: #4f46e5;
+	background: #dc2626;
 	border-radius: 9999px;
 }
 
@@ -127,7 +127,7 @@ a:hover {
 
 .mobistore-icon-btn:hover {
 	background: #ffffff;
-	color: #4f46e5;
+	color: #dc2626;
 	border-color: #cbd5e1;
 	transform: translateY(-2px);
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -171,8 +171,8 @@ a:hover {
 
 .header-search-input:focus {
 	background: #ffffff !important;
-	border-color: #4f46e5 !important;
-	box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15) !important;
+	border-color: #dc2626 !important;
+	box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15) !important;
 }
 
 .header-search-icon {
@@ -214,10 +214,10 @@ a:hover {
 
 .category-pill:hover,
 .category-pill.active {
-	background: #4f46e5;
+	background: #dc2626;
 	color: #ffffff;
-	border-color: #4f46e5;
-	box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+	border-color: #dc2626;
+	box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
 }
 
 /* Product Cards */
@@ -261,7 +261,7 @@ a:hover {
 }
 
 .badge-pill.hot {
-	background: #ef4444;
+	background: #dc2626;
 	color: #ffffff;
 }
 
@@ -298,6 +298,31 @@ a:hover {
 	transform: scale(1.08);
 }
 
+.product-quickview-btn {
+	position: absolute;
+	bottom: 0.75rem;
+	left: 50%;
+	transform: translateX(-50%) translateY(10px);
+	background: rgba(15, 23, 42, 0.9);
+	color: #ffffff;
+	border: none;
+	border-radius: 9999px;
+	padding: 0.35rem 0.9rem;
+	font-size: 0.75rem;
+	font-weight: 700;
+	cursor: pointer;
+	opacity: 0;
+	transition: all 0.2s ease;
+	z-index: 3;
+	white-space: nowrap;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.product-card:hover .product-quickview-btn {
+	opacity: 1;
+	transform: translateX(-50%) translateY(0);
+}
+
 .product-favorite-btn {
 	position: absolute;
 	top: 0.85rem;
@@ -318,12 +343,12 @@ a:hover {
 
 .product-favorite-btn:hover {
 	background: #ffffff;
-	color: #ef4444;
+	color: #dc2626;
 	transform: scale(1.1);
 }
 
 .product-favorite-btn.favorited {
-	color: #ef4444;
+	color: #dc2626;
 }
 
 .product-body {
@@ -400,8 +425,8 @@ a:hover {
 
 /* Buttons */
 .btn-accent {
-	background: #4f46e5 !important;
-	border-color: #4f46e5 !important;
+	background: #dc2626 !important;
+	border-color: #dc2626 !important;
 	color: #ffffff !important;
 	font-weight: 600;
 	border-radius: var(--radius-sm);
@@ -411,8 +436,8 @@ a:hover {
 }
 
 .btn-accent:hover {
-	background: #4338ca !important;
-	border-color: #4338ca !important;
+	background: #b91c1c !important;
+	border-color: #b91c1c !important;
 	transform: translateY(-1px);
 }
 
