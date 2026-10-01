@@ -35,6 +35,28 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/fulfillment', fulfillmentRoutes);
 
+// Price Drop Alerts Storage
+const priceAlerts = [];
+app.post('/api/products/:id/price-alert', (req, res) => {
+	const { email, targetPrice, productName } = req.body;
+	if (!email || !email.includes('@')) {
+		return res.status(400).json({ success: false, message: 'Please enter a valid email address.' });
+	}
+
+	priceAlerts.push({
+		productId: req.params.id,
+		productName,
+		email,
+		targetPrice,
+		createdAt: new Date(),
+	});
+
+	res.status(201).json({
+		success: true,
+		message: `Price alert created for ${productName} at $${targetPrice}`,
+	});
+});
+
 // Newsletter Subscriber API
 const subscribersList = new Set();
 app.post('/api/newsletter/subscribe', (req, res) => {

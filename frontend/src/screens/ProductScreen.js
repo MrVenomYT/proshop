@@ -12,6 +12,8 @@ import Rating from '../components/Rating';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import Meta from '../components/Meta';
+import PriceDropAlert from '../components/PriceDropAlert';
+import ProductFaqAccordion from '../components/ProductFaqAccordion';
 import {
 	listProductDetails,
 	createProductReview,
@@ -124,7 +126,7 @@ const ProductScreen = ({ history, match }) => {
 					<Meta title={`${product.name} | ProShop`} />
 
 					<Row className='mb-5'>
-						{/* Product Image Stage with Transparent PNG focus */}
+						{/* Product Image Stage */}
 						<Col lg={7} md={6} className='mb-4 mb-md-0'>
 							<div className='pdp-gallery-container'>
 								<img
@@ -238,6 +240,12 @@ const ProductScreen = ({ history, match }) => {
 							</div>
 						</Col>
 					</Row>
+
+					{/* Price Drop Alert Notification Form */}
+					<PriceDropAlert product={product} userInfo={userInfo} />
+
+					{/* Collapsible FAQ Accordion Section */}
+					<ProductFaqAccordion />
 
 					{/* Customer Reviews Section */}
 					<Row>
