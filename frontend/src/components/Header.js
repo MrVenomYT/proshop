@@ -8,7 +8,7 @@ import { logout } from '../actions/user-actions';
 const Header = () => {
 	const dispatch = useDispatch();
 	const history = useHistory();
-	const [activeNav, setActiveNav] = useState('home');
+	const [activeCategoryTab, setActiveCategoryTab] = useState('gadgets');
 
 	const userLogin = useSelector((state) => state.userLogin);
 	const { userInfo } = userLogin;
@@ -26,218 +26,113 @@ const Header = () => {
 		history.push('/login');
 	};
 
-	const shopCategories = [
-		{ label: 'All Catalog Products', query: '' },
-		{ label: 'Smartphones & Handhelds', query: 'Smartphones' },
-		{ label: 'Laptops & Portable PCs', query: 'Laptops' },
-		{ label: 'PC Components & GPUs', query: 'Components' },
-		{ label: 'Smartwatches & Wearables', query: 'Wearables' },
-		{ label: 'Audio & Studio Headphones', query: 'Audio' },
-		{ label: 'Monitors & Displays', query: 'Monitors' },
-		{ label: 'Power & GaN Fast Chargers', query: 'Power' },
-		{ label: 'Storage & Portable SSDs', query: 'Storage' },
-		{ label: 'Networking & Smart Home', query: 'Networking' },
+	const categoryTabs = [
+		{ id: 'gadgets', label: 'Gadgets', icon: 'fas fa-mobile-alt', query: '' },
+		{ id: 'smarthome', label: 'Smart Home', icon: 'fas fa-home', query: 'Networking' },
+		{ id: 'audio', label: 'Audio', icon: 'fas fa-headphones', query: 'Audio' },
+		{ id: 'wearables', label: 'Wearables', icon: 'fas fa-clock', query: 'Wearables' },
+		{ id: 'accessories', label: 'Accessories', icon: 'fas fa-keyboard', query: 'Keyboards' },
+		{ id: 'sale', label: 'Sale', icon: 'fas fa-tags', query: 'sale', isRed: true },
 	];
 
-	const handleNavClick = (navKey, path) => {
-		setActiveNav(navKey);
-		history.push(path);
+	const handleTabClick = (tab) => {
+		setActiveCategoryTab(tab.id);
+		if (!tab.query) history.push('/');
+		else history.push(`/search/${tab.query}`);
 	};
 
 	return (
-		<header className='sticky-top shadow-sm'>
-			{/* Top Announcement Bar */}
-			<div
-				style={{
-					background: 'linear-gradient(90deg, #090e1a 0%, #1a103c 50%, #2e0854 100%)',
-					color: '#ffffff',
-					fontSize: '0.8rem',
-					padding: '7px 0',
-				}}
-			>
-				<Container className='d-flex align-items-center justify-content-between'>
-					<div className='d-flex align-items-center gap-2'>
-						<span className='font-weight-bold text-white' style={{ letterSpacing: '0.04em' }}>
-							FOR PREMIUM HARDWARE & EXCLUSIVE OFFERS, SHOP PROSHOP!
-						</span>
-					</div>
-					<div>
-						<Link
-							to='/search/sale'
-							className='btn btn-sm font-weight-bold'
-							style={{
-								background: '#7c3aed',
-								color: '#ffffff',
-								borderRadius: '9999px',
-								padding: '2px 14px',
-								fontSize: '0.75rem',
-							}}
-						>
-							EXPLORE DEALS <i className='fas fa-arrow-right ml-1'></i>
-						</Link>
-					</div>
-				</Container>
-			</div>
-
-			{/* Sub-ticker Bar */}
-			<div
-				style={{
-					background: '#ffffff',
-					borderBottom: '1px solid #f1f5f9',
-					color: '#475569',
-					fontSize: '0.78rem',
-					padding: '6px 0',
-				}}
-			>
-				<Container className='d-flex align-items-center justify-content-between flex-wrap gap-2'>
-					<div className='d-flex align-items-center gap-2'>
-						<i className='fas fa-truck text-primary'></i>
-						<span>Free Shipping on Orders Over $50</span>
-					</div>
-					<div className='d-flex align-items-center gap-2'>
-						<i className='fas fa-check-circle text-success'></i>
-						<span>100% Original Authentic Products</span>
-					</div>
-					<div className='d-none d-md-flex align-items-center gap-2'>
-						<i className='fas fa-shield-alt text-warning'></i>
-						<span>2-Year Hardware Warranty</span>
-					</div>
-					<div className='d-none d-lg-flex align-items-center gap-2'>
-						<i className='fas fa-headset text-info'></i>
-						<span>24/7 Creator Customer Support</span>
-					</div>
-				</Container>
-			</div>
-
-			{/* Main Navbar */}
-			<Navbar
-				expand='lg'
-				style={{
-					background: '#ffffff',
-					borderBottom: '1px solid #e2e8f0',
-					padding: '0.75rem 0',
-				}}
-			>
+		<header className='sticky-top shadow-sm bg-white'>
+			{/* Main Navbar (TechVerse SS 1 Style) */}
+			<Navbar expand='lg' className='py-2 border-bottom bg-white'>
 				<Container>
-					{/* Brand Logo */}
-					<Link to='/' className='navbar-brand d-flex align-items-center text-decoration-none' onClick={() => setActiveNav('home')}>
+					{/* Brand Logo Lockup */}
+					<Link to='/' className='navbar-brand d-flex align-items-center text-decoration-none'>
 						<div
 							style={{
-								width: '36px',
-								height: '36px',
+								width: '38px',
+								height: '38px',
 								borderRadius: '10px',
-								background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
+								background: '#dc2626',
 								color: '#ffffff',
 								display: 'flex',
 								alignItems: 'center',
 								justifyContent: 'center',
 								fontSize: '1.2rem',
-								fontWeight: '800',
+								fontWeight: '900',
 								marginRight: '10px',
+								boxShadow: '0 4px 12px rgba(220, 38, 38, 0.3)',
 							}}
 						>
 							<i className='fas fa-cube'></i>
 						</div>
 						<div>
-							<div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: '800', lineHeight: '1', color: '#0f172a', letterSpacing: '-0.03em' }}>
-								Pro<span style={{ color: '#6366f1' }}>Store</span>
+							<div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.45rem', fontWeight: '800', lineHeight: '1', color: '#0f172a', letterSpacing: '-0.03em' }}>
+								Tech<span style={{ color: '#dc2626' }}>Verse</span>
 							</div>
-							<div className='text-muted' style={{ fontSize: '0.68rem', fontWeight: '600', letterSpacing: '0.04em' }}>
-								Your Hardware, Connected
+							<div className='text-muted' style={{ fontSize: '0.65rem', fontWeight: '600', letterSpacing: '0.04em' }}>
+								Discover. Shop. Upgrade.
 							</div>
 						</div>
 					</Link>
 
-					<Navbar.Toggle aria-controls='mobistore-navbar-nav' />
+					<Navbar.Toggle aria-controls='techverse-navbar-nav' />
 
-					<Navbar.Collapse id='mobistore-navbar-nav'>
-						{/* Center Links */}
-						<Nav className='mx-auto align-items-center gap-1 my-2 my-lg-0' style={{ fontSize: '0.92rem', fontWeight: '600' }}>
-							<button
-								type='button'
-								onClick={() => handleNavClick('home', '/')}
-								className={`mobistore-nav-link ${activeNav === 'home' ? 'active' : ''}`}
-							>
-								Home
-							</button>
+					<Navbar.Collapse id='techverse-navbar-nav'>
+						{/* Search Bar */}
+						<div className='mx-auto my-2 my-lg-0 w-100 d-flex justify-content-center' style={{ maxWidth: '420px' }}>
+							<Route render={({ history: routeHistory }) => <SearchBox history={routeHistory} />} />
+						</div>
 
-							<NavDropdown
-								title={
-									<span className={`mobistore-nav-link ${activeNav === 'shop' ? 'active' : ''}`}>
-										Shop <i className='fas fa-chevron-down ml-1' style={{ fontSize: '0.7rem' }}></i>
-									</span>
-								}
-								id='shop-mobistore-dropdown'
-							>
-								{shopCategories.map((cat) => (
-									<NavDropdown.Item
-										key={cat.label}
-										onClick={() => {
-											setActiveNav('shop');
-											if (!cat.query) history.push('/');
-											else history.push(`/search/${cat.query}`);
-										}}
-									>
-										{cat.label}
-									</NavDropdown.Item>
-								))}
-							</NavDropdown>
-
-							<button
-								type='button'
-								onClick={() => handleNavClick('brands', '/search/Apple')}
-								className={`mobistore-nav-link ${activeNav === 'brands' ? 'active' : ''}`}
-							>
-								Brands
-							</button>
-
-							<button
-								type='button'
-								onClick={() => handleNavClick('accessories', '/search/Keyboards')}
-								className={`mobistore-nav-link ${activeNav === 'accessories' ? 'active' : ''}`}
-							>
-								Accessories
-							</button>
-
-							<button
-								type='button'
-								onClick={() => handleNavClick('deals', '/search/sale')}
-								className={`mobistore-nav-link ${activeNav === 'deals' ? 'active' : ''}`}
-								style={{ color: '#ef4444' }}
-							>
-								Deals
-							</button>
+						{/* Right Actions */}
+						<Nav className='ml-auto align-items-center gap-3'>
+							<Link to='/' className='nav-link font-weight-bold text-dark px-2'>Home</Link>
+							<Link to='/search/all' className='nav-link font-weight-bold text-dark px-2'>Shop</Link>
 
 							{userInfo && userInfo.isAdmin && (
-								<button
-									type='button'
-									onClick={() => handleNavClick('admin', '/admin/dashboard')}
-									className={`mobistore-nav-link ${activeNav === 'admin' ? 'active' : ''}`}
-									style={{ color: '#4f46e5', fontWeight: '700' }}
-								>
-									<i className='fas fa-chart-line mr-1'></i> Admin Center
-								</button>
+								<Link to='/admin/dashboard' className='btn btn-sm btn-outline-danger font-weight-bold mx-1' style={{ borderRadius: '8px' }}>
+									<i className='fas fa-chart-line mr-1'></i> Admin Dashboard
+								</Link>
 							)}
-						</Nav>
 
-						{/* Right Icons */}
-						<div className='d-flex align-items-center gap-2 ml-lg-auto'>
-							<div className='position-relative' style={{ minWidth: '200px' }}>
-								<Route render={({ history: routeHistory }) => <SearchBox history={routeHistory} />} />
+							{/* Region Flags */}
+							<div className='d-none d-xl-flex align-items-center gap-2 text-muted px-2' style={{ fontSize: '0.78rem', fontWeight: '600' }}>
+								<span>US | UK | UAE</span>
 							</div>
 
+							{/* Saved Wishlist */}
+							<Link to='/favorites' className='mobistore-icon-btn position-relative' title='Saved Wishlist'>
+								<i className='far fa-heart'></i>
+								{favoritesCount > 0 && (
+									<span className='mobistore-badge' style={{ background: '#dc2626' }}>
+										{favoritesCount}
+									</span>
+								)}
+							</Link>
+
+							{/* Shopping Bag */}
+							<Link to='/cart' className='mobistore-icon-btn position-relative' title='Shopping Bag'>
+								<i className='fas fa-shopping-bag'></i>
+								{cartCount > 0 && (
+									<span className='mobistore-badge' style={{ background: '#dc2626' }}>
+										{cartCount}
+									</span>
+								)}
+							</Link>
+
+							{/* User Profile */}
 							{userInfo ? (
 								<NavDropdown
 									title={
 										<div className='mobistore-icon-btn' title={userInfo.name}>
-											<i className='fas fa-user-circle' style={{ color: '#4f46e5' }}></i>
+											<i className='fas fa-user-circle' style={{ color: '#dc2626' }}></i>
 										</div>
 									}
-									id='mobistore-user-dropdown'
+									id='techverse-user-dropdown'
 									alignRight
 								>
 									<NavDropdown.Item onClick={() => history.push('/profile')}>
-										<i className='fas fa-id-card mr-2 text-muted'></i>My Account
+										<i className='fas fa-id-card mr-2 text-muted'></i>My Profile
 									</NavDropdown.Item>
 									<NavDropdown.Item onClick={() => history.push('/favorites')}>
 										<i className='fas fa-heart mr-2 text-muted'></i>Saved Items
@@ -250,16 +145,16 @@ const Header = () => {
 												Admin Tools
 											</div>
 											<NavDropdown.Item onClick={() => history.push('/admin/dashboard')}>
-												<i className='fas fa-chart-pie mr-2 text-primary'></i>Admin Dashboard
+												<i className='fas fa-chart-pie mr-2 text-danger'></i>Admin Dashboard
 											</NavDropdown.Item>
 											<NavDropdown.Item onClick={() => history.push('/admin/productlist')}>
-												<i className='fas fa-boxes mr-2 text-muted'></i>Products
+												<i className='fas fa-boxes mr-2 text-muted'></i>Manage Products
 											</NavDropdown.Item>
 											<NavDropdown.Item onClick={() => history.push('/admin/orderlist')}>
-												<i className='fas fa-receipt mr-2 text-muted'></i>Orders
+												<i className='fas fa-receipt mr-2 text-muted'></i>Manage Orders
 											</NavDropdown.Item>
 											<NavDropdown.Item onClick={() => history.push('/admin/userlist')}>
-												<i className='fas fa-users mr-2 text-muted'></i>Users
+												<i className='fas fa-users mr-2 text-muted'></i>Manage Users
 											</NavDropdown.Item>
 										</>
 									)}
@@ -274,28 +169,44 @@ const Header = () => {
 									<i className='far fa-user'></i>
 								</Link>
 							)}
-
-							<Link to='/favorites' className='mobistore-icon-btn position-relative' title='Saved Wishlist'>
-								<i className='far fa-heart'></i>
-								{favoritesCount > 0 && (
-									<span className='mobistore-badge' style={{ background: '#ef4444' }}>
-										{favoritesCount}
-									</span>
-								)}
-							</Link>
-
-							<Link to='/cart' className='mobistore-icon-btn position-relative' title='Shopping Bag'>
-								<i className='fas fa-shopping-bag'></i>
-								{cartCount > 0 && (
-									<span className='mobistore-badge' style={{ background: '#4f46e5' }}>
-										{cartCount}
-									</span>
-								)}
-							</Link>
-						</div>
+						</Nav>
 					</Navbar.Collapse>
 				</Container>
 			</Navbar>
+
+			{/* Sub-Header Category Tabs Bar with Crimson Red Active Line (TechVerse SS 1 Style) */}
+			<div className='border-bottom bg-white overflow-auto' style={{ scrollbarWidth: 'none' }}>
+				<Container className='d-flex align-items-center gap-2 py-1'>
+					{categoryTabs.map((tab) => (
+						<button
+							key={tab.id}
+							type='button'
+							onClick={() => handleTabClick(tab)}
+							className='btn btn-link text-decoration-none px-3 py-2 text-dark font-weight-bold position-relative'
+							style={{
+								fontSize: '0.88rem',
+								color: activeCategoryTab === tab.id ? '#dc2626' : '#334155',
+							}}
+						>
+							<i className={`${tab.icon} mr-1.5`} style={{ color: tab.isRed ? '#dc2626' : 'inherit' }}></i>
+							<span style={{ color: tab.isRed ? '#dc2626' : 'inherit' }}>{tab.label}</span>
+							{activeCategoryTab === tab.id && (
+								<span
+									style={{
+										position: 'absolute',
+										bottom: '-4px',
+										left: '12px',
+										right: '12px',
+										height: '3px',
+										background: '#dc2626',
+										borderRadius: '9999px',
+									}}
+								/>
+							)}
+						</button>
+					))}
+				</Container>
+			</div>
 		</header>
 	);
 };
