@@ -13,7 +13,7 @@ import Message from '../components/Message';
 import Meta from '../components/Meta';
 import PriceDropAlert from '../components/PriceDropAlert';
 import ProductFaqAccordion from '../components/ProductFaqAccordion';
-import ProductImageZoom from '../components/ProductImageZoom';
+import ProductImageGallery from '../components/ProductImageGallery';
 import SocialShareButtons from '../components/SocialShareButtons';
 import ProductDetailSkeleton from '../components/ProductDetailSkeleton';
 import FrequentlyBoughtTogether from '../components/FrequentlyBoughtTogether';
@@ -129,9 +129,9 @@ const ProductScreen = ({ history, match }) => {
 					<Meta title={`${product.name} | ProShop`} />
 
 					<Row className='mb-5'>
-						{/* Product Image Stage with Interactive Zoom */}
+						{/* Product Image Multi-Angle Gallery */}
 						<Col lg={7} md={6} className='mb-4 mb-md-0'>
-							<ProductImageZoom src={product.image} alt={product.name} />
+							<ProductImageGallery product={product} />
 
 							{/* Social Sharing Buttons */}
 							<SocialShareButtons product={product} />
