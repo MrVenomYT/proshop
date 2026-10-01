@@ -17,6 +17,7 @@ import ProductImageGallery from '../components/ProductImageGallery';
 import SocialShareButtons from '../components/SocialShareButtons';
 import ProductDetailSkeleton from '../components/ProductDetailSkeleton';
 import FrequentlyBoughtTogether from '../components/FrequentlyBoughtTogether';
+import ReviewSentimentSummary from '../components/ReviewSentimentSummary';
 import {
 	listProductDetails,
 	createProductReview,
@@ -243,6 +244,9 @@ const ProductScreen = ({ history, match }) => {
 
 					{/* Collapsible FAQ Accordion Section */}
 					<ProductFaqAccordion />
+
+					{/* AI Review Sentiment Summary Block */}
+					<ReviewSentimentSummary reviews={product.reviews} />
 
 					{/* Customer Reviews Section */}
 					<Row>

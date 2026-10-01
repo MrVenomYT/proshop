@@ -10,23 +10,36 @@ const ExitIntentModal = () => {
 	const [error, setError] = useState('');
 
 	useEffect(() => {
-		const isDismissed = sessionStorage.getItem('proshop_exit_intent_dismissed');
-		if (isDismissed) return;
+		// Permanently suppress if already dismissed or subscribed in localStorage
+		if (localStorage.getItem('proshop_exit_intent_dismissed') === 'true') {
+			return;
+		}
 
-		const handleMouseLeave = (e) => {
-			if (e.clientY <= 15) {
-				setShow(true);
-				sessionStorage.setItem('proshop_exit_intent_dismissed', 'true');
-			}
-		};
+		// Don't trigger exit intent until user has spent at least 8 seconds on page
+		const timer = setTimeout(() => {
+			const handleMouseLeave = (e) => {
+				if (localStorage.getItem('proshop_exit_intent_dismissed') === 'true') {
+					return;
+				}
+				if (e.clientY <= 10) {
+					setShow(true);
+					localStorage.setItem('proshop_exit_intent_dismissed', 'true');
+				}
+			};
 
-		document.addEventListener('mouseleave', handleMouseLeave);
-		return () => document.removeEventListener('mouseleave', handleMouseLeave);
+			document.addEventListener('mouseleave', handleMouseLeave);
+
+			return () => {
+				document.removeEventListener('mouseleave', handleMouseLeave);
+			};
+		}, 8000);
+
+		return () => clearTimeout(timer);
 	}, []);
 
 	const handleClose = () => {
 		setShow(false);
-		sessionStorage.setItem('proshop_exit_intent_dismissed', 'true');
+		localStorage.setItem('proshop_exit_intent_dismissed', 'true');
 	};
 
 	const handleSubmit = async (e) => {
@@ -42,6 +55,7 @@ const ExitIntentModal = () => {
 			const { data } = await axios.post('/api/newsletter/subscribe', { email });
 			if (data.success) {
 				setSubscribed(true);
+				localStorage.setItem('proshop_exit_intent_dismissed', 'true');
 			}
 		} catch (err) {
 			setError(err.response?.data?.message || 'Subscription failed. Please try again.');
