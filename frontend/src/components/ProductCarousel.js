@@ -113,35 +113,42 @@ const ProductCarousel = () => {
 							<Rating value={currentProduct.rating} text={`${currentProduct.numReviews} verified reviews`} />
 						</div>
 
-						{/* Pricing & Dual Action Buttons */}
-						<div className='d-flex flex-wrap align-items-center gap-3 mb-4'>
-							<div className='d-flex align-items-baseline mr-3'>
-								<span style={{ fontSize: '2.1rem', fontWeight: '800', color: '#0f172a', fontFamily: 'var(--font-heading)' }}>
-									${Number(currentProduct.price).toFixed(2)}
+						{/* Price Display */}
+						<div className='d-flex align-items-baseline mb-3'>
+							<span style={{ fontSize: '2.2rem', fontWeight: '800', color: '#0f172a', fontFamily: 'var(--font-heading)' }}>
+								${Number(currentProduct.price).toFixed(2)}
+							</span>
+							{hasDiscount && (
+								<span style={{ fontSize: '1.1rem', color: '#94a3b8', textDecoration: 'line-through', marginLeft: '12px' }}>
+									${Number(currentProduct.originalPrice).toFixed(2)}
 								</span>
-								{hasDiscount && (
-									<span style={{ fontSize: '1.1rem', color: '#94a3b8', textDecoration: 'line-through', marginLeft: '10px' }}>
-										${Number(currentProduct.originalPrice).toFixed(2)}
-									</span>
-								)}
-							</div>
+							)}
+						</div>
 
+						{/* Separate Dual Action Buttons Container with Spacing */}
+						<div className='d-flex flex-wrap align-items-center mb-4'>
 							<Link
 								to={`/product/${currentProduct._id}`}
-								className='btn font-weight-bold px-4 py-3'
+								className='btn font-weight-bold px-4 py-3 mr-3 mb-2'
 								style={{
 									background: '#dc2626',
 									color: '#ffffff',
 									borderRadius: '12px',
 									boxShadow: '0 8px 18px rgba(220, 38, 38, 0.3)',
+									display: 'inline-flex',
+									alignItems: 'center',
 								}}
 							>
 								Shop Now <i className='fas fa-arrow-right ml-2'></i>
 							</Link>
 							<Link
 								to='/search/sale'
-								className='btn btn-light font-weight-bold px-4 py-3 border'
-								style={{ borderRadius: '12px' }}
+								className='btn btn-light font-weight-bold px-4 py-3 border mb-2'
+								style={{
+									borderRadius: '12px',
+									display: 'inline-flex',
+									alignItems: 'center',
+								}}
 							>
 								Browse Collection
 							</Link>
