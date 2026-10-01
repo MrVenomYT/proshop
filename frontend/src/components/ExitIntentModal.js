@@ -51,12 +51,19 @@ const ExitIntentModal = () => {
 	};
 
 	return (
-		<Modal show={show} onHide={handleClose} centered className='exit-intent-modal'>
+		<Modal
+			show={show}
+			onHide={handleClose}
+			centered
+			className='exit-intent-modal'
+			contentClassName='bg-transparent border-0 shadow-none'
+		>
 			<div
 				className='p-4 p-md-5 text-white position-relative overflow-hidden'
 				style={{
 					background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 60%, #dc2626 120%)',
 					borderRadius: '24px',
+					boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)',
 				}}
 			>
 				<button

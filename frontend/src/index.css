@@ -133,6 +133,15 @@ a:hover {
 	text-decoration: none;
 }
 
+/* Exit Intent Modal Corner Fix */
+.exit-intent-modal .modal-content {
+	background: transparent !important;
+	border: none !important;
+	box-shadow: none !important;
+	border-radius: 24px !important;
+	overflow: hidden !important;
+}
+
 /* Footer Link Styles - High Contrast Legibility */
 footer {
 	background: #0f172a !important;

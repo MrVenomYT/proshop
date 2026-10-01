@@ -11,22 +11,47 @@ const FrequentlyBoughtTogether = ({ currentProduct }) => {
 	const productList = useSelector((state) => state.productList);
 	const { products } = productList;
 
-	// Pick 2 complementary items from catalog
+	// Intelligent Category Affinity Map based on Purchase Trends
+	const categoryAffinity = {
+		'Smartphones & Tablets': ['Wearables & Smart Glasses', 'Power & Charging Hubs', 'Audio & Creator Gear'],
+		'Laptops & Handhelds': ['Keyboards & Controllers', 'Audio & Creator Gear', 'Storage & Backup', 'Monitors & Displays'],
+		'PC Components & Desktops': ['Monitors & Displays', 'Keyboards & Controllers', 'Power & Charging Hubs'],
+		'Audio & Creator Gear': ['Power & Charging Hubs', 'Keyboards & Controllers'],
+		'Wearables & Smart Glasses': ['Power & Charging Hubs', 'Smartphones & Tablets'],
+	};
+
+	// Pick 2 complementary items based on category trends & purchase patterns
 	const complementaryItems = useMemo(() => {
 		if (!products || !currentProduct) return [];
-		return products
-			.filter((p) => p._id !== currentProduct._id)
-			.slice(0, 2);
+
+		const candidates = products.filter((p) => p._id !== currentProduct._id);
+		const targetCategories = categoryAffinity[currentProduct.category] || [];
+
+		// Primary picks: Items matching affinity categories
+		let primaryPicks = candidates.filter((p) => targetCategories.includes(p.category));
+
+		// Sort by customer rating
+		primaryPicks.sort((a, b) => b.rating - a.rating);
+
+		if (primaryPicks.length >= 2) {
+			return primaryPicks.slice(0, 2);
+		}
+
+		// Fill remaining spots with top-rated general items
+		const remaining = candidates.filter((p) => !primaryPicks.some((pick) => pick._id === p._id));
+		remaining.sort((a, b) => b.rating - a.rating);
+
+		return [...primaryPicks, ...remaining].slice(0, 2);
 	}, [products, currentProduct]);
 
-	// Track which bundle items are selected (default: all 3 selected)
+	// Track which bundle items are selected (default: all selected)
 	const [selectedItems, setSelectedItems] = useState([true, true, true]);
 
 	if (!currentProduct || complementaryItems.length < 2) return null;
 
 	const allBundleProducts = [currentProduct, complementaryItems[0], complementaryItems[1]];
 
-	// Calculate prices
+	// Calculate bundle pricing
 	const rawTotal = allBundleProducts.reduce((acc, item, idx) => {
 		return selectedItems[idx] ? acc + Number(item.price) : acc;
 	}, 0);
@@ -60,7 +85,7 @@ const FrequentlyBoughtTogether = ({ currentProduct }) => {
 						Frequently Bought Together
 					</h2>
 					<span className='text-muted' style={{ fontSize: '0.85rem' }}>
-						Bundle complementary gear & save <strong className='text-danger'>10% extra discount</strong> on total order.
+						Recommended based on common purchasing trends. Bundle & save <strong className='text-danger'>10% extra discount</strong>.
 					</span>
 				</div>
 			</div>
@@ -140,7 +165,7 @@ const FrequentlyBoughtTogether = ({ currentProduct }) => {
 
 						{discountPercent > 0 && (
 							<span className='badge bg-danger text-white mb-3 p-1.5 px-3' style={{ borderRadius: '9999px', fontSize: '0.75rem' }}>
-								✓ SAVING ${ (rawTotal - finalTotal).toFixed(2) } (10% BUNDLE DISCOUNT)
+								✓ SAVING ${(rawTotal - finalTotal).toFixed(2)} (10% BUNDLE DISCOUNT)
 							</span>
 						)}
 
