@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Button, Badge } from 'react-bootstrap';
+import { Row, Col, Badge } from 'react-bootstrap';
 
 const PromoBanner = () => {
 	const [timeLeft, setTimeLeft] = useState({ hours: 8, minutes: 42, seconds: 15 });
@@ -29,24 +29,11 @@ const PromoBanner = () => {
 		<div
 			className='position-relative my-4 p-4 p-md-5 overflow-hidden text-white shadow-lg'
 			style={{
-				background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #450a0a 100%)',
+				backgroundColor: '#0f172a',
 				borderRadius: '24px',
 				border: '1px solid rgba(255, 255, 255, 0.12)',
 			}}
 		>
-			{/* Decorative Accent Glow */}
-			<div
-				style={{
-					position: 'absolute',
-					top: '-50px',
-					right: '-50px',
-					width: '300px',
-					height: '300px',
-					background: 'radial-gradient(circle, rgba(220, 38, 38, 0.3) 0%, rgba(0,0,0,0) 70%)',
-					pointerEvents: 'none',
-				}}
-			/>
-
 			<Row className='align-items-center position-relative' style={{ zIndex: 2 }}>
 				<Col lg={7} className='mb-4 mb-lg-0'>
 					<div className='d-flex align-items-center gap-2 mb-2 flex-wrap'>

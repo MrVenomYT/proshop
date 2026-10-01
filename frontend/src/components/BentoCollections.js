@@ -19,9 +19,9 @@ const BentoCollections = () => {
 			<div className='d-flex align-items-center justify-content-between mb-3'>
 				<div>
 					<h2 className='mb-0' style={{ fontSize: '1.4rem' }}>Shop by Department</h2>
-					<p className='text-muted mb-0' style={{ fontSize: '0.85rem' }}>Browse top-tier hardware across all 10 departments</p>
+					<p className='text-muted mb-0' style={{ fontSize: '0.85rem' }}>Browse top-tier hardware across all departments</p>
 				</div>
-				<Link to='/search/all' className='text-primary font-weight-bold' style={{ fontSize: '0.85rem' }}>
+				<Link to='/search/all' className='text-danger font-weight-bold' style={{ fontSize: '0.85rem' }}>
 					View All <i className='fas fa-arrow-right ml-1'></i>
 				</Link>
 			</div>
@@ -41,7 +41,7 @@ const BentoCollections = () => {
 							}}
 							onMouseEnter={(e) => {
 								e.currentTarget.style.transform = 'translateY(-4px)';
-								e.currentTarget.style.borderColor = '#4f46e5';
+								e.currentTarget.style.borderColor = '#dc2626';
 								e.currentTarget.style.boxShadow = '0 10px 20px rgba(0,0,0,0.06)';
 							}}
 							onMouseLeave={(e) => {
@@ -78,7 +78,7 @@ const BentoCollections = () => {
 				))}
 			</Row>
 
-			{/* 2. Featured Bento Collections */}
+			{/* 2. Featured Collections */}
 			<div className='d-flex align-items-center justify-content-between mb-3'>
 				<div>
 					<h2 className='mb-0' style={{ fontSize: '1.4rem' }}>Featured Collections & Workstation Bundles</h2>
@@ -90,117 +90,111 @@ const BentoCollections = () => {
 				{/* Bento 1: Laptops */}
 				<Col md={4} sm={12} className='mb-3'>
 					<Card
-						className='p-4 h-100 text-white border-0 position-relative overflow-hidden'
+						className='p-4 h-100 text-white border-0 shadow-sm'
 						style={{
-							background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+							backgroundColor: '#0f172a',
 							borderRadius: '20px',
-							minHeight: '220px',
+							display: 'flex',
+							flexDirection: 'column',
+							justifyContent: 'space-between',
 						}}
 					>
-						<div style={{ zIndex: 2, maxWidth: '65%' }}>
-							<span className='text-primary font-weight-bold uppercase' style={{ fontSize: '0.75rem', letterSpacing: '0.05em' }}>
+						<div>
+							<span className='text-danger font-weight-bold text-uppercase' style={{ fontSize: '0.75rem', letterSpacing: '0.05em' }}>
 								PRO COMPUTING
 							</span>
-							<h3 className='text-white mt-1 mb-2' style={{ fontSize: '1.25rem', lineHeight: '1.2' }}>
+							<h3 className='text-white mt-2 mb-2' style={{ fontSize: '1.3rem', fontWeight: '800', wordBreak: 'normal', wordWrap: 'break-word' }}>
 								Workstations & Ultrabooks
 							</h3>
-							<p className='text-slate-400 mb-3' style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
-								Apple, Dell XPS, ThinkPad & ROG Gaming.
+							<p className='mb-3' style={{ fontSize: '0.85rem', color: '#cbd5e1' }}>
+								Apple M3 Max, Dell XPS, ThinkPad & ROG Gaming.
 							</p>
-							<Link to='/search/Laptops' className='btn btn-light btn-sm font-weight-bold'>
+						</div>
+
+						<div className='d-flex align-items-center justify-content-between mt-3 pt-3 border-top border-slate-800' style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+							<Link to='/search/Laptops' className='btn btn-light btn-sm font-weight-bold px-3' style={{ borderRadius: '8px' }}>
 								Explore Laptops &rarr;
 							</Link>
+							<img
+								src='https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=150&q=80'
+								alt='Workstation Laptop'
+								style={{ width: '60px', height: '60px', borderRadius: '10px', objectFit: 'cover' }}
+							/>
 						</div>
-						<img
-							src='https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=400&q=80'
-							alt='MacBook'
-							style={{
-								position: 'absolute',
-								right: '-10px',
-								bottom: '-10px',
-								maxHeight: '160px',
-								borderRadius: '12px',
-								boxShadow: '0 8px 16px rgba(0,0,0,0.5)',
-							}}
-						/>
 					</Card>
 				</Col>
 
 				{/* Bento 2: Studio Audio */}
 				<Col md={4} sm={12} className='mb-3'>
 					<Card
-						className='p-4 h-100 text-white border-0 position-relative overflow-hidden'
+						className='p-4 h-100 text-white border-0 shadow-sm'
 						style={{
-							background: 'linear-gradient(135deg, #18181b 0%, #27272a 100%)',
+							backgroundColor: '#18181b',
 							borderRadius: '20px',
-							minHeight: '220px',
+							display: 'flex',
+							flexDirection: 'column',
+							justifyContent: 'space-between',
 						}}
 					>
-						<div style={{ zIndex: 2, maxWidth: '65%' }}>
-							<span className='text-warning font-weight-bold uppercase' style={{ fontSize: '0.75rem', letterSpacing: '0.05em' }}>
+						<div>
+							<span className='text-warning font-weight-bold text-uppercase' style={{ fontSize: '0.75rem', letterSpacing: '0.05em' }}>
 								STUDIO ACOUSTICS
 							</span>
-							<h3 className='text-white mt-1 mb-2' style={{ fontSize: '1.25rem', lineHeight: '1.2' }}>
-								Hi-Res Audio & Shure Mics
+							<h3 className='text-white mt-2 mb-2' style={{ fontSize: '1.3rem', fontWeight: '800', wordBreak: 'normal', wordWrap: 'break-word' }}>
+								Hi-Res Audio & Studio Mics
 							</h3>
-							<p className='text-slate-400 mb-3' style={{ fontSize: '0.8rem', color: '#a1a1aa' }}>
-								Sony, Sennheiser, Shure & Elgato.
+							<p className='mb-3' style={{ fontSize: '0.85rem', color: '#a1a1aa' }}>
+								Sony, Sennheiser, Shure & Elgato Acoustics.
 							</p>
-							<Link to='/search/Audio' className='btn btn-warning btn-sm font-weight-bold text-dark'>
+						</div>
+
+						<div className='d-flex align-items-center justify-content-between mt-3 pt-3 border-top' style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+							<Link to='/search/Audio' className='btn btn-warning btn-sm font-weight-bold text-dark px-3' style={{ borderRadius: '8px' }}>
 								Shop Studio Gear &rarr;
 							</Link>
+							<img
+								src='https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=150&q=80'
+								alt='Studio Audio'
+								style={{ width: '60px', height: '60px', borderRadius: '10px', objectFit: 'cover' }}
+							/>
 						</div>
-						<img
-							src='https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=400&q=80'
-							alt='Audio'
-							style={{
-								position: 'absolute',
-								right: '-10px',
-								bottom: '-10px',
-								maxHeight: '160px',
-								borderRadius: '12px',
-								boxShadow: '0 8px 16px rgba(0,0,0,0.5)',
-							}}
-						/>
 					</Card>
 				</Col>
 
 				{/* Bento 3: Limited Sale Banner */}
 				<Col md={4} sm={12} className='mb-3'>
 					<Card
-						className='p-4 h-100 text-white border-0 position-relative overflow-hidden'
+						className='p-4 h-100 text-white border-0 shadow-sm'
 						style={{
-							background: 'linear-gradient(135deg, #1e1b4b 0%, #31104b 100%)',
+							backgroundColor: '#1e1b4b',
 							borderRadius: '20px',
-							minHeight: '220px',
+							display: 'flex',
+							flexDirection: 'column',
+							justifyContent: 'space-between',
 						}}
 					>
-						<div style={{ zIndex: 2, maxWidth: '65%' }}>
-							<span className='text-danger font-weight-bold uppercase' style={{ fontSize: '0.75rem', letterSpacing: '0.05em' }}>
+						<div>
+							<span className='text-danger font-weight-bold text-uppercase' style={{ fontSize: '0.75rem', letterSpacing: '0.05em' }}>
 								SEASONAL OFFERS
 							</span>
-							<h3 className='text-white mt-1 mb-2' style={{ fontSize: '1.25rem', lineHeight: '1.2' }}>
+							<h3 className='text-white mt-2 mb-2' style={{ fontSize: '1.3rem', fontWeight: '800', wordBreak: 'normal', wordWrap: 'break-word' }}>
 								Up to 40% Off Flagships
 							</h3>
-							<p className='text-slate-300 mb-3' style={{ fontSize: '0.8rem', color: '#cbd5e1' }}>
+							<p className='mb-3' style={{ fontSize: '0.85rem', color: '#cbd5e1' }}>
 								Smartphones, SSDs & GaN Fast Chargers.
 							</p>
-							<Link to='/search/sale' className='btn btn-danger btn-sm font-weight-bold'>
+						</div>
+
+						<div className='d-flex align-items-center justify-content-between mt-3 pt-3 border-top' style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+							<Link to='/search/sale' className='btn btn-danger btn-sm font-weight-bold px-3' style={{ borderRadius: '8px' }}>
 								Shop All Deals &rarr;
 							</Link>
+							<img
+								src='https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=150&q=80'
+								alt='Flagship Deal'
+								style={{ width: '60px', height: '60px', borderRadius: '10px', objectFit: 'cover' }}
+							/>
 						</div>
-						<img
-							src='https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=400&q=80'
-							alt='iPhone Deal'
-							style={{
-								position: 'absolute',
-								right: '-10px',
-								bottom: '-10px',
-								maxHeight: '160px',
-								borderRadius: '12px',
-								boxShadow: '0 8px 16px rgba(0,0,0,0.5)',
-							}}
-						/>
 					</Card>
 				</Col>
 			</Row>

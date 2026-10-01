@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Rating from './Rating';
+import useImage from '../hooks/useImage';
 import { addToFavorites, removeFavorite } from '../actions/user-actions';
 import { addToCart } from '../actions/cart-actions';
 
@@ -21,6 +22,8 @@ const Product = ({
 
 	const userFavorites = useSelector((state) => state.userGetFavorites);
 	const { favorites } = userFavorites;
+
+	const { loaded, currentSrc } = useImage(product.image);
 
 	const productId = isFavoriteProp ? product.product : product._id;
 	const isFavorited =
@@ -86,7 +89,7 @@ const Product = ({
 				)}
 			</div>
 
-			<div className='product-image-container'>
+			<div className='product-image-container position-relative'>
 				<Link
 					to={`/product/${productId}`}
 					style={{
@@ -99,7 +102,7 @@ const Product = ({
 					}}
 				>
 					<img
-						src={product.image}
+						src={currentSrc}
 						alt={product.name}
 						loading='lazy'
 						style={{
@@ -107,11 +110,8 @@ const Product = ({
 							maxWidth: '100%',
 							objectFit: 'contain',
 							filter: 'drop-shadow(0 10px 14px rgba(0, 0, 0, 0.08))',
-							transition: 'transform 0.35s ease',
-						}}
-						onError={(e) => {
-							e.target.onerror = null;
-							e.target.src = '/images/sample.png';
+							transition: 'opacity 0.3s ease, transform 0.35s ease',
+							opacity: loaded ? 1 : 0.4,
 						}}
 					/>
 				</Link>

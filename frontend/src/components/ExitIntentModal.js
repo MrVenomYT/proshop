@@ -10,12 +10,10 @@ const ExitIntentModal = () => {
 	const [error, setError] = useState('');
 
 	useEffect(() => {
-		// Permanently suppress if already dismissed or subscribed in localStorage
 		if (localStorage.getItem('proshop_exit_intent_dismissed') === 'true') {
 			return;
 		}
 
-		// Don't trigger exit intent until user has spent at least 8 seconds on page
 		const timer = setTimeout(() => {
 			const handleMouseLeave = (e) => {
 				if (localStorage.getItem('proshop_exit_intent_dismissed') === 'true') {
@@ -75,9 +73,10 @@ const ExitIntentModal = () => {
 			<div
 				className='p-4 p-md-5 text-white position-relative overflow-hidden'
 				style={{
-					background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 60%, #dc2626 120%)',
+					backgroundColor: '#0f172a',
 					borderRadius: '24px',
 					boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)',
+					border: '1px solid #334155',
 				}}
 			>
 				<button

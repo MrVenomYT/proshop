@@ -129,11 +129,11 @@ const Footer = () => {
 					</Col>
 				</Row>
 
-				{/* 2. Newsletter Subscription Card with Mailing API Integration */}
+				{/* 2. Newsletter Subscription Card */}
 				<div
 					className='p-4 p-md-5 mb-5 rounded-20 text-white'
 					style={{
-						background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+						backgroundColor: '#1e293b',
 						border: '1px solid rgba(255,255,255,0.1)',
 						borderRadius: '20px',
 					}}

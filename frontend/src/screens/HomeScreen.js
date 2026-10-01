@@ -17,6 +17,7 @@ import Meta from '../components/Meta';
 import { listProducts } from '../actions/product-actions';
 import { getFavorites } from '../actions/user-actions';
 import useCompareList from '../hooks/useCompareList';
+import preloadProductImages from '../utils/preloadImages';
 
 const HomeScreen = ({ match }) => {
 	const keyword = match.params.keyword;
@@ -51,6 +52,13 @@ const HomeScreen = ({ match }) => {
 			dispatch(getFavorites(userInfo._id));
 		}
 	}, [dispatch, keyword, pageNumber, userInfo]);
+
+	// Preload all product PNG images into browser cache to eliminate layout shifts
+	useEffect(() => {
+		if (products && products.length > 0) {
+			preloadProductImages(products);
+		}
+	}, [products]);
 
 	// Extract unique brands list from catalog
 	const allBrands = useMemo(() => {
