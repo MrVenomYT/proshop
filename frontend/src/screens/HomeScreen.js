@@ -9,6 +9,7 @@ import Paginate from '../components/Paginate';
 import ProductCarousel from '../components/ProductCarousel';
 import BentoCollections from '../components/BentoCollections';
 import BrandLogosRow from '../components/BrandLogosRow';
+import PromoBanner from '../components/PromoBanner';
 import QuickViewModal from '../components/QuickViewModal';
 import FilterSidebar from '../components/FilterSidebar';
 import ProductCompareModal from '../components/ProductCompareModal';
@@ -188,10 +189,13 @@ const HomeScreen = ({ match, history }) => {
 					{/* 1. Flagship Hero Showcase */}
 					<ProductCarousel />
 
-					{/* 2. Shop by Brand Row */}
+					{/* 2. Full-Width Homepage Hero Promotional Banner */}
+					<PromoBanner />
+
+					{/* 3. Shop by Brand Row */}
 					<BrandLogosRow />
 
-					{/* 3. Featured Bento Collections & Category Icons */}
+					{/* 4. Featured Bento Collections & Category Icons */}
 					<BentoCollections />
 				</>
 			) : (
@@ -205,8 +209,8 @@ const HomeScreen = ({ match, history }) => {
 				</div>
 			)}
 
-			{/* 4. Main Catalog Header & Filter Bar */}
-			<div className='d-flex flex-column flex-lg-row align-items-lg-center justify-content-between mb-3 gap-3'>
+			{/* 5. Main Catalog Header & Filter Bar */}
+			<div id='catalog-grid' className='d-flex flex-column flex-lg-row align-items-lg-center justify-content-between mb-3 gap-3 pt-3'>
 				<div>
 					<h2 className='mb-1' style={{ fontSize: '1.6rem' }}>
 						{keyword ? `Search Results` : 'Trending Hardware & Best Deals'}

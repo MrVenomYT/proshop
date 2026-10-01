@@ -14,6 +14,8 @@ import Message from '../components/Message';
 import Meta from '../components/Meta';
 import PriceDropAlert from '../components/PriceDropAlert';
 import ProductFaqAccordion from '../components/ProductFaqAccordion';
+import ProductImageZoom from '../components/ProductImageZoom';
+import SocialShareButtons from '../components/SocialShareButtons';
 import {
 	listProductDetails,
 	createProductReview,
@@ -110,7 +112,7 @@ const ProductScreen = ({ history, match }) => {
 	return (
 		<>
 			<div className='mb-4'>
-				<Link className='btn btn-light' to='/'>
+				<Link className='btn btn-light font-weight-bold' to='/'>
 					<i className='fas fa-arrow-left mr-2'></i> Back to Catalog
 				</Link>
 			</div>
@@ -126,24 +128,15 @@ const ProductScreen = ({ history, match }) => {
 					<Meta title={`${product.name} | ProShop`} />
 
 					<Row className='mb-5'>
-						{/* Product Image Stage */}
+						{/* Product Image Stage with Interactive Zoom */}
 						<Col lg={7} md={6} className='mb-4 mb-md-0'>
-							<div className='pdp-gallery-container'>
-								<img
-									src={product.image}
-									alt={product.name}
-									style={{
-										filter: 'drop-shadow(0 20px 30px rgba(0, 0, 0, 0.12))',
-									}}
-									onError={(e) => {
-										e.target.onerror = null;
-										e.target.src = '/images/sample.png';
-									}}
-								/>
-							</div>
+							<ProductImageZoom src={product.image} alt={product.name} />
+
+							{/* Social Sharing Buttons */}
+							<SocialShareButtons product={product} />
 						</Col>
 
-						{/* Product Contiguous Purchase Module */}
+						{/* Product Purchase Module */}
 						<Col lg={5} md={6}>
 							<div className='pdp-info-card'>
 								<div className='d-flex align-items-center justify-content-between mb-2'>
