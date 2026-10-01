@@ -2,6 +2,9 @@ import asyncHandler from 'express-async-handler';
 import ProductModel from '../models/product-model.js';
 import { isDbConnected, memDb } from '../config/in-memory-db.js';
 
+// In-memory price alert store
+const activePriceAlerts = [];
+
 // @description     Fetch all products
 // @route           GET /api/products
 // @access          Public
@@ -103,7 +106,7 @@ const createProduct = asyncHandler(async (req, res) => {
 	}
 });
 
-// @description     Update a product
+// @description     Update a product & check price drop alerts
 // @route           PUT /api/products/:id
 // @access          Private/Admin
 const updateProduct = asyncHandler(async (req, res) => {
@@ -121,8 +124,11 @@ const updateProduct = asyncHandler(async (req, res) => {
 	const product = await Product.findById(req.params.id);
 
 	if (product) {
+		const oldPrice = product.price;
+		const newPrice = Number(price);
+
 		product.name = name;
-		product.price = price;
+		product.price = newPrice;
 		product.description = description;
 		product.image = image;
 		product.brand = brand;
@@ -130,11 +136,49 @@ const updateProduct = asyncHandler(async (req, res) => {
 		product.countInStock = countInStock;
 
 		const updatedProduct = await product.save();
+
+		// Trigger price drop alert check if price reduced
+		if (newPrice < oldPrice) {
+			const matchingAlerts = activePriceAlerts.filter(
+				(alert) => alert.productId === req.params.id && newPrice <= alert.targetPrice
+			);
+			if (matchingAlerts.length > 0) {
+				console.log(
+					`[PRICE DROP ALERT] Triggered for ${product.name}! New price: $${newPrice}. Notifying ${matchingAlerts.length} subscriber(s).`
+				);
+			}
+		}
+
 		res.json(updatedProduct);
 	} else {
 		res.status(404);
 		throw new Error('Product not found');
 	}
+});
+
+// @description     Create price drop alert subscription
+// @route           POST /api/products/:id/price-alert
+// @access          Public
+const createPriceAlert = asyncHandler(async (req, res) => {
+	const { email, targetPrice, productName } = req.body;
+
+	if (!email || !email.includes('@')) {
+		res.status(400);
+		throw new Error('Please enter a valid email address');
+	}
+
+	activePriceAlerts.push({
+		productId: req.params.id,
+		productName: productName || 'Hardware Product',
+		email,
+		targetPrice: Number(targetPrice) || 0,
+		createdAt: new Date(),
+	});
+
+	res.status(201).json({
+		success: true,
+		message: `Price alert subscribed for ${email} at $${targetPrice}`,
+	});
 });
 
 // @description     Create new review
@@ -193,6 +237,7 @@ export {
 	deleteProduct,
 	createProduct,
 	updateProduct,
+	createPriceAlert,
 	createProductReview,
 	getTopProducts,
 };
